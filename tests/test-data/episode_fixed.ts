@@ -57,6 +57,8 @@ export class EpisodeDetailsComponent implements OnInit {
       .subscribe(data => this.episode = data);
   }
 
+
+
   onSubmit() {
     this.episodeService.addTheme(this.episode.id, this.addForm.value)
       .subscribe(data => { this.getEpisodeDetails() });

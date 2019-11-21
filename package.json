@@ -16,6 +16,7 @@
   "dependencies": {
     "@typescript-eslint/parser": "^2.8.0",
     "@typescript-eslint/typescript-estree": "^2.8.0",
+    "deep-diff": "^1.0.2",
     "eslint": "^6.6.0",
     "fs-extra": "^8.1.0"
   }
