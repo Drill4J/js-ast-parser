@@ -1,0 +1,22 @@
+{
+  "name": "ast-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^2.8.0",
+    "@typescript-eslint/typescript-estree": "^2.8.0",
+    "eslint": "^6.6.0",
+    "fs-extra": "^8.1.0"
+  }
+}
