@@ -6,20 +6,21 @@ import { extractMethodName } from "./analyzers/extract_method_name";
 import { extractMethodParams } from "./analyzers/extractMethodParams";
 import { extractMethods } from "./analyzers/extract_all_methods";
 
+export class AstParser {
 
-const options: TSESTreeOptions = {
-  comment: false,
-  jsx: false
+    private options: TSESTreeOptions;
+    private sourcePath:String;
+
+    constructor(sourcePath:String){
+        this.options =  {
+            comment: false,
+            jsx: false
+        };
+        this.sourcePath = sourcePath;
+    }
+
+    public parse(){
+        const source = fs.readFileSync(this.sourcePath, 'utf8')
+        return parse(source, this.options)
+    }
 }
-
-const source = fs.readFileSync('test-data/episode.ts', 'utf8')
-
-const ast = parse(source, options)
-
-const methods = extractMethods(ast)
-
-methods.forEach(m  => {
-    const methodName = extractMethodName(m)
-    const params = extractMethodParams(m)
-    console.log(`${methodName}(${params.join(",")})`)
-})
