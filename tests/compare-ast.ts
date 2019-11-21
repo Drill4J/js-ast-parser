@@ -26,6 +26,9 @@ if(JSON.stringify(oldAst) !== JSON.stringify(newAst)){
     const names1 = newData.methods.map( it => it.name)
     const names2 = oldData.methods.map( it => it.name)
 
-    console.log(names1)
-    console.log(names2)
+    let difference = names1
+                 .filter(x => !names2.includes(x))
+                 .concat(names2.filter(x => !names1.includes(x)));
+
+    console.log(difference)
 }
