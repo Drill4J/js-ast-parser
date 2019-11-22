@@ -11,5 +11,5 @@ export function extractMethodName(method: MethodDefinition){
                name = node.name
         }
     }})
-    return name;
+    return name.trim();
 }

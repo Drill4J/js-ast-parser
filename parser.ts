@@ -9,18 +9,16 @@ import { extractMethods } from "./analyzers/extract_all_methods";
 export class AstParser {
 
     private options: TSESTreeOptions;
-    private sourcePath:String;
-
-    constructor(sourcePath:String){
+    
+    constructor(){
         this.options =  {
             comment: false,
             jsx: false
         };
-        this.sourcePath = sourcePath;
     }
 
-    public parse(){
-        const source = fs.readFileSync(this.sourcePath, 'utf8')
+    public parse(sourcePath: string){
+        const source = fs.readFileSync(sourcePath, 'utf8')
         return parse(source, this.options)
     }
 }

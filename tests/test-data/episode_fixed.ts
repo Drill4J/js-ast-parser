@@ -57,7 +57,9 @@ export class EpisodeDetailsComponent implements OnInit {
       .subscribe(data => this.episode = data);
   }
 
-
+  goBack(): void {
+    this.location.back();
+  }
 
   onSubmit() {
     this.episodeService.addTheme(this.episode.id, this.addForm.value)
@@ -99,10 +101,7 @@ export class EpisodeDetailsComponent implements OnInit {
       this.getEpisodeDetails();
      });
 
-
-
-
-    //this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
+    this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
   }
 
   stopEpisode(episode: Episode) {
@@ -144,5 +143,9 @@ export class EpisodeDetailsComponent implements OnInit {
 
   cancelEdit(){
     this.editableTheme = null;
+  }
+
+  newMethod(){
+
   }
 }
