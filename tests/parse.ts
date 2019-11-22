@@ -1,10 +1,10 @@
-import { AstParser } from "../parser"
-import { extractMethods } from "../analyzers/extract_all_methods"
-import { extractMethodName } from "../analyzers/extract_method_name"
-import { extractMethodParams } from "../analyzers/extractMethodParams"
-import { extractClassName } from "../analyzers/extract_class_name"
+import { AstParser } from "../src/parser"
+import { extractMethods } from "../src/analyzers/extract_all_methods"
+import { extractMethodName } from "../src/analyzers/extract_method_name"
+import { extractMethodParams } from "../src/analyzers/extractMethodParams"
+import { extractClassName } from "../src/analyzers/extract_class_name"
 import { writeJson, emptyDirSync } from "fs-extra"
-import { DataExtractor } from "../extractor"
+import { DataExtractor } from "../src/extractor"
 
 const parser = new AstParser()
 

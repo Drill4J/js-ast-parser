@@ -1,6 +1,6 @@
 import { readFileSync } from "fs-extra"
-import { AstParser } from "../parser"
-import { DataExtractor } from "../extractor"
+import { AstParser } from "../src/parser"
+import { DataExtractor } from "../src/extractor"
 import { diff, addedDiff, deletedDiff, updatedDiff, detailedDiff } from 'deep-object-diff';
 
 const oldAst = JSON.parse(readFileSync('./data/ast.json'))
