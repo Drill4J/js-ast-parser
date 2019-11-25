@@ -8,9 +8,9 @@ import { DataExtractor } from "../src/extractor"
 
 const parser = new AstParser()
 
-const ast = parser.parse("./tests/test-data/episode.ts")
+const ast = parser.parse("./tests/test-data/original/episode.ts")
 
-const newAst = parser.parse("./tests/test-data/episode_fixed.ts")
+const newAst = parser.parse("./tests/test-data/new/episode.ts")
 
 const extractor = new DataExtractor(); 
 
