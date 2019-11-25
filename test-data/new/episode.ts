@@ -103,8 +103,8 @@ export class EpisodeDetailsComponent implements OnInit {
 
 
 
-    // this is update
-    this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
+
+    //this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
   }
 
   stopEpisode(episode: Episode) {

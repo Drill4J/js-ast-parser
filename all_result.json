@@ -2012,93 +2012,6 @@
                       ],
                       "optional": false
                     }
-                  },
-                  {
-                    "type": "ExpressionStatement",
-                    "expression": {
-                      "type": "CallExpression",
-                      "callee": {
-                        "type": "MemberExpression",
-                        "object": {
-                          "type": "CallExpression",
-                          "callee": {
-                            "type": "MemberExpression",
-                            "object": {
-                              "type": "MemberExpression",
-                              "object": {
-                                "type": "ThisExpression"
-                              },
-                              "property": {
-                                "type": "Identifier",
-                                "name": "episodeService"
-                              },
-                              "computed": false,
-                              "optional": false
-                            },
-                            "property": {
-                              "type": "Identifier",
-                              "name": "startEpisode"
-                            },
-                            "computed": false,
-                            "optional": false
-                          },
-                          "arguments": [
-                            {
-                              "type": "Identifier",
-                              "name": "episode"
-                            }
-                          ],
-                          "optional": false
-                        },
-                        "property": {
-                          "type": "Identifier",
-                          "name": "subscribe"
-                        },
-                        "computed": false,
-                        "optional": false
-                      },
-                      "arguments": [
-                        {
-                          "type": "ArrowFunctionExpression",
-                          "generator": false,
-                          "id": null,
-                          "params": [
-                            {
-                              "type": "Identifier",
-                              "name": "data"
-                            }
-                          ],
-                          "body": {
-                            "type": "BlockStatement",
-                            "body": [
-                              {
-                                "type": "ExpressionStatement",
-                                "expression": {
-                                  "type": "CallExpression",
-                                  "callee": {
-                                    "type": "MemberExpression",
-                                    "object": {
-                                      "type": "ThisExpression"
-                                    },
-                                    "property": {
-                                      "type": "Identifier",
-                                      "name": "getEpisodeDetails"
-                                    },
-                                    "computed": false,
-                                    "optional": false
-                                  },
-                                  "arguments": [],
-                                  "optional": false
-                                }
-                              }
-                            ]
-                          },
-                          "async": false,
-                          "expression": false
-                        }
-                      ],
-                      "optional": false
-                    }
                   }
                 ]
               },
@@ -2302,8 +2215,8 @@
                       }
                     },
                     "range": [
-                      3444,
-                      3453
+                      3425,
+                      3434
                     ],
                     "typeAnnotation": {
                       "type": "TSTypeReference",
@@ -2311,8 +2224,8 @@
                         "type": "Identifier",
                         "name": "Episode",
                         "range": [
-                          3446,
-                          3453
+                          3427,
+                          3434
                         ],
                         "loc": {
                           "start": {
@@ -2326,8 +2239,8 @@
                         }
                       },
                       "range": [
-                        3446,
-                        3453
+                        3427,
+                        3434
                       ],
                       "loc": {
                         "start": {
@@ -2530,8 +2443,8 @@
                       }
                     },
                     "range": [
-                      3576,
-                      3585
+                      3557,
+                      3566
                     ],
                     "typeAnnotation": {
                       "type": "TSTypeReference",
@@ -2539,8 +2452,8 @@
                         "type": "Identifier",
                         "name": "Episode",
                         "range": [
-                          3578,
-                          3585
+                          3559,
+                          3566
                         ],
                         "loc": {
                           "start": {
@@ -2554,8 +2467,8 @@
                         }
                       },
                       "range": [
-                        3578,
-                        3585
+                        3559,
+                        3566
                       ],
                       "loc": {
                         "start": {
@@ -2584,14 +2497,14 @@
                   }
                 },
                 "range": [
-                  3586,
-                  3595
+                  3567,
+                  3576
                 ],
                 "typeAnnotation": {
                   "type": "TSBooleanKeyword",
                   "range": [
-                    3588,
-                    3595
+                    3569,
+                    3576
                   ],
                   "loc": {
                     "start": {
@@ -2731,8 +2644,8 @@
                       }
                     },
                     "range": [
-                      3759,
-                      3768
+                      3740,
+                      3749
                     ],
                     "typeAnnotation": {
                       "type": "TSTypeReference",
@@ -2740,8 +2653,8 @@
                         "type": "Identifier",
                         "name": "Episode",
                         "range": [
-                          3761,
-                          3768
+                          3742,
+                          3749
                         ],
                         "loc": {
                           "start": {
@@ -2755,8 +2668,8 @@
                         }
                       },
                       "range": [
-                        3761,
-                        3768
+                        3742,
+                        3749
                       ],
                       "loc": {
                         "start": {
@@ -2951,8 +2864,8 @@
                       }
                     },
                     "range": [
-                      3847,
-                      3856
+                      3828,
+                      3837
                     ],
                     "typeAnnotation": {
                       "type": "TSTypeReference",
@@ -2960,8 +2873,8 @@
                         "type": "Identifier",
                         "name": "Episode",
                         "range": [
-                          3849,
-                          3856
+                          3830,
+                          3837
                         ],
                         "loc": {
                           "start": {
@@ -2975,8 +2888,8 @@
                         }
                       },
                       "range": [
-                        3849,
-                        3856
+                        3830,
+                        3837
                       ],
                       "loc": {
                         "start": {
@@ -3165,14 +3078,14 @@
                   }
                 },
                 "range": [
-                  3979,
-                  3985
+                  3960,
+                  3966
                 ],
                 "typeAnnotation": {
                   "type": "TSVoidKeyword",
                   "range": [
-                    3981,
-                    3985
+                    3962,
+                    3966
                   ],
                   "loc": {
                     "start": {
@@ -3333,14 +3246,14 @@
                       }
                     },
                     "range": [
-                      4169,
-                      4177
+                      4150,
+                      4158
                     ],
                     "typeAnnotation": {
                       "type": "TSNumberKeyword",
                       "range": [
-                        4171,
-                        4177
+                        4152,
+                        4158
                       ],
                       "loc": {
                         "start": {
@@ -3371,14 +3284,14 @@
                       }
                     },
                     "range": [
-                      4186,
-                      4194
+                      4167,
+                      4175
                     ],
                     "typeAnnotation": {
                       "type": "TSNumberKeyword",
                       "range": [
-                        4188,
-                        4194
+                        4169,
+                        4175
                       ],
                       "loc": {
                         "start": {
@@ -3612,8 +3525,8 @@
                       }
                     },
                     "range": [
-                      4327,
-                      4334
+                      4308,
+                      4315
                     ],
                     "typeAnnotation": {
                       "type": "TSTypeReference",
@@ -3621,8 +3534,8 @@
                         "type": "Identifier",
                         "name": "Theme",
                         "range": [
-                          4329,
-                          4334
+                          4310,
+                          4315
                         ],
                         "loc": {
                           "start": {
@@ -3636,8 +3549,8 @@
                         }
                       },
                       "range": [
-                        4329,
-                        4334
+                        4310,
+                        4315
                       ],
                       "loc": {
                         "start": {
@@ -3660,15 +3573,76 @@
           }
         },
         {
+          "name": "cancelEdit",
+          "params": [],
+          "loc": {
+            "start": {
+              "line": 147,
+              "column": 2
+            },
+            "end": {
+              "line": 149,
+              "column": 3
+            }
+          },
+          "body": {
+            "type": "MethodDefinition",
+            "key": {
+              "type": "Identifier",
+              "name": "cancelEdit"
+            },
+            "value": {
+              "type": "FunctionExpression",
+              "id": null,
+              "generator": false,
+              "expression": false,
+              "async": false,
+              "body": {
+                "type": "BlockStatement",
+                "body": [
+                  {
+                    "type": "ExpressionStatement",
+                    "expression": {
+                      "type": "AssignmentExpression",
+                      "operator": "=",
+                      "left": {
+                        "type": "MemberExpression",
+                        "object": {
+                          "type": "ThisExpression"
+                        },
+                        "property": {
+                          "type": "Identifier",
+                          "name": "editableTheme"
+                        },
+                        "computed": false,
+                        "optional": false
+                      },
+                      "right": {
+                        "type": "Literal",
+                        "value": null,
+                        "raw": "null"
+                      }
+                    }
+                  }
+                ]
+              },
+              "params": []
+            },
+            "computed": false,
+            "static": false,
+            "kind": "method"
+          }
+        },
+        {
           "name": "newMethod",
           "params": [],
           "loc": {
             "start": {
-              "line": 152,
+              "line": 151,
               "column": 2
             },
             "end": {
-              "line": 154,
+              "line": 153,
               "column": 3
             }
           },

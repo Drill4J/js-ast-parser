@@ -103,8 +103,8 @@ export class EpisodeDetailsComponent implements OnInit {
 
 
 
-    // this is update
-    this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
+
+    //this.episodeService.startEpisode(episode).subscribe(data => { this.getEpisodeDetails() });
   }
 
   stopEpisode(episode: Episode) {
@@ -144,12 +144,11 @@ export class EpisodeDetailsComponent implements OnInit {
     this.updateForm.controls['title'].setValue(this.editableTheme.title);
   }
 
-  // aka delete method
-  // cancelEdit(){
-  //   this.editableTheme = null;
-  // }
+  cancelEdit(){
+    this.editableTheme = null;
+  }
 
   newMethod(){
-
+    clientInformation.userAgent.replace
   }
 }

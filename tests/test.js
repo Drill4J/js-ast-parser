@@ -1,9 +1,9 @@
-const test = require('ava');
-const  AstParser   = require('../src/parser')
+// const test = require('ava');
+// const  AstParser   = require('../src/parser')
 
-test('foo', t => {
+// test('foo', t => {
     
-	const parser = new AstParser()
+// 	const parser = new AstParser()
 
-    const ast = parser.parse("./tests/test-data/original/episode.ts")
-});
+//     const ast = parser.parse("./tests/test-data/original/episode.ts")
+// });
