@@ -144,9 +144,10 @@ export class EpisodeDetailsComponent implements OnInit {
     this.updateForm.controls['title'].setValue(this.editableTheme.title);
   }
 
-  cancelEdit(){
-    this.editableTheme = null;
-  }
+  // aka delete method
+  // cancelEdit(){
+  //   this.editableTheme = null;
+  // }
 
   newMethod(){
 

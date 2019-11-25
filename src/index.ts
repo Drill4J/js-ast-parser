@@ -16,7 +16,7 @@ function writeFile(name, object){
 
 program
   .requiredOption('-d, --dir <path>', 'source code path should be specified')
-  .requiredOption('-u, --url  <url>', 'url to send data to')
+  .option('-u, --url  <url>', 'url to send data to')
   .parse(process.argv);
 
 const parser = new AstParser()

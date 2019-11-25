@@ -3,7 +3,7 @@ import { Node, Program, Parameter, MethodDefinition } from "@typescript-eslint/t
 import fs from "fs-extra";
 import traverser  from "eslint/lib/shared/traverser";
 import { extractMethodName } from "./analyzers/extract_method_name";
-import { extractMethodParams } from "./analyzers/extractMethodParams";
+import { extractMethodParams } from "./analyzers/extract_method_params";
 import { extractMethods } from "./analyzers/extract_all_methods";
 
 export class AstParser {

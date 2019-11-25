@@ -1,7 +1,7 @@
 import { AstParser } from "../src/parser"
 import { extractMethods } from "../src/analyzers/extract_all_methods"
 import { extractMethodName } from "../src/analyzers/extract_method_name"
-import { extractMethodParams } from "../src/analyzers/extractMethodParams"
+import { extractMethodParams } from "../src/analyzers/extract_method_params"
 import { extractClassName } from "../src/analyzers/extract_class_name"
 import { writeJson, emptyDirSync } from "fs-extra"
 import { DataExtractor } from "../src/extractor"

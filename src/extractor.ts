@@ -1,8 +1,9 @@
-import { Program } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Program, MethodDefinition } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { extractMethods } from "./analyzers/extract_all_methods";
 import { extractClassName } from "./analyzers/extract_class_name";
 import { extractMethodName } from "./analyzers/extract_method_name";
-import { extractMethodParams } from "./analyzers/extractMethodParams";
+import { extractMethodParams } from "./analyzers/extract_method_params";
+import { deleteLocationData } from "./analyzers/delete_location_data";
 
 export class DataExtractor {
 
@@ -28,7 +29,7 @@ export class DataExtractor {
                 name: methodName,
                 params: params,
                 loc: m.loc,
-                body: m
+                body: deleteLocationData(m)
             }
 
             result.methods.push(method)
