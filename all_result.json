@@ -1,6 +1,6 @@
 [
   {
-    "filePath": "/home/sergey/Github/ast-parser/tests/test-data/new/episode.ts",
+    "filePath": "/home/sergey/Github/ast-parser/test-data/new/episode.ts",
     "result": {
       "className": "EpisodeDetailsComponent",
       "methods": [

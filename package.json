@@ -1,6 +1,6 @@
 {
   "name": "ast-parser-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -39,7 +39,8 @@
     "deep-object-diff": "^1.1.0",
     "eslint": "^6.6.0",
     "fs-extra": "^8.1.0",
-    "recursive-readdir": "^2.2.2"
+    "recursive-readdir": "^2.2.2",
+    "recursive-readdir-synchronous": "0.0.4"
   },
   "type": "module"
 }
