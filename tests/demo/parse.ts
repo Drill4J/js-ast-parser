@@ -36,4 +36,4 @@ import { parseFiles } from "src";
 // writeFile('./data/ast.json', ast)
 // writeFile('./data/newAst.json', newAst)
 
-parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
+// parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")

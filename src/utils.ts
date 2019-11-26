@@ -11,8 +11,8 @@ export function writeFile(name, object){
       })
 }
 
-export function getFiles(path: string, ignore: string[]){
-    return recursive(path, ignore);
+export function getFiles(path: string, ignoreFiles: string[]){
+    return recursive(path, ignoreFiles);
 }
 
 export function saveData(url:string, data){

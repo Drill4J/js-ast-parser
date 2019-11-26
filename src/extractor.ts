@@ -12,7 +12,7 @@ export class DataExtractor {
     public getClassMethods(ast: Program){
         const methods = extractMethods(ast)
 
-        const  className = extractClassName(ast)
+        let  className = extractClassName(ast)
 
         const result = {
             className: className,

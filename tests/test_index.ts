@@ -2,6 +2,6 @@ import test from 'ava';
 import { parseFiles } from 'src';
 
 test('fn() returns foo', t => {
-	parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
+	// parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
     // t.is(files, [""])
 });

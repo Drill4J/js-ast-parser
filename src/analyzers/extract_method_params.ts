@@ -1,8 +1,9 @@
 import { MethodDefinition, FunctionExpression } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import { MainMethod } from "./extract_all_methods";
 
-export function extractMethodParams(method: MethodDefinition){
+export function extractMethodParams(method: MainMethod){
     let params = [];
     traverser.traverse(method, {
         enter(node){
