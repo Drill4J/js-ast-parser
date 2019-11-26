@@ -1,10 +1,6 @@
 import test from 'ava';
-import { AstParser } from 'src/parser';
+import { parseFiles } from 'src';
 
 test('fn() returns foo', t => {
-	const parser = new AstParser()
-
-    const ast = parser.parse("test-data/original/episode.ts")
-
-    t.is(JSON.stringify(ast),"")
+	parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
 });

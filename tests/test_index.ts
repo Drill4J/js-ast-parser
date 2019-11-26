@@ -1,10 +1,7 @@
 import test from 'ava';
-import { AstParser } from 'src/parser';
-import { getFiles } from 'src/utils';
+import { parseFiles } from 'src';
 
 test('fn() returns foo', t => {
-	const files = getFiles("test-data/original", [])
-
-    console.log(files)
+	parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
     // t.is(files, [""])
 });

@@ -1,3 +1,5 @@
+import { parseFiles } from "src";
+
 // import { AstParser } from "../src/parser"
 // import { extractMethods } from "../src/analyzers/extract_all_methods"
 // import { extractMethodName } from "../src/analyzers/extract_method_name"
@@ -33,3 +35,5 @@
 // writeFile('./data/result2.json', newData)
 // writeFile('./data/ast.json', ast)
 // writeFile('./data/newAst.json', newAst)
+
+parseFiles("/home/sergey/Github/todomvc/examples/typescript-angular/js", "", "")
