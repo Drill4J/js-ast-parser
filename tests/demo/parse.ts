@@ -1,4 +1,4 @@
-import { parseFiles } from "src";
+// import { parseFiles } from "src";
 
 // import { AstParser } from "../src/parser"
 // import { extractMethods } from "../src/analyzers/extract_all_methods"

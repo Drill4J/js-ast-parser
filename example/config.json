@@ -1,0 +1,14 @@
+{
+    "dir": "/home/sergey/Github/todomvc/examples/typescript-angular/js",
+    "url": "http://localhost:5000/compare",
+    "ignoreFiles": [
+        "*.js.map",
+        "*.js",
+        "_all.ts"
+    ],
+    "ignoreFolders": [
+        "libs",
+        "coverage",
+        "interfaces"
+    ]
+}

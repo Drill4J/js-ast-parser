@@ -24,7 +24,6 @@ export class DataExtractor {
             const methodName = extractMethodName(m)
             const params = extractMethodParams(m)
             
-
             const method = {
                 name: methodName,
                 params: params,

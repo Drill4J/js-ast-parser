@@ -1,9 +1,9 @@
 
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpression, FunctionExpression } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpression, FunctionExpression, ExportNamedDeclaration } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 
-export type MainMethod = FunctionDeclaration | MethodDefinition
+export type MainMethod = FunctionDeclaration | MethodDefinition | ExportNamedDeclaration
 
 export function extractMethods(program: Program){
     const methods: MainMethod[] = [] 
