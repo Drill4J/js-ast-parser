@@ -9,9 +9,7 @@ program
   .requiredOption('-c, --cfg <path>', 'path to config.json file')
   .parse(process.argv);
 
-let cfg = readFileSync(program.cfg)
-
-let config = JSON.parse(cfg.toString())
+let config = JSON.parse(readFileSync(program.cfg).toString())
 
 parseFiles(config.dir, config.url, config.ignoreFiles, config.ignoreFolders)
 
