@@ -32,7 +32,7 @@ export function saveData(url:string, data){
     }
 }
 
-export function parseFiles(folder, url, ignoreFiles, ignoreFolders){
+export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders){
     const parser = new AstParser()
     const extractor = new DataExtractor();
     
@@ -48,5 +48,10 @@ export function parseFiles(folder, url, ignoreFiles, ignoreFolders){
     
     console.log("Save data")
   
-    saveData(url, results)
+    const data = {
+        projectName: projectName,
+        results: results
+    }
+
+    saveData(url, data)
   }

@@ -11,7 +11,7 @@ program
 
 let config = JSON.parse(readFileSync(program.cfg).toString())
 
-parseFiles(config.dir, config.url, config.ignoreFiles, config.ignoreFolders)
+parseFiles(config.projectName, config.source_dir, config.url, config.ignoreFiles, config.ignoreFolders)
 
 
 
