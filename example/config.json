@@ -1,7 +1,7 @@
 {
     "projectName": "todomvc",
     "source_dir": "/home/sergey/Github/todomvc/examples/typescript-angular/js",
-    "url": "http://localhost:5000/compare",
+    "url": "http://localhost:8081/saveAst",
     "ignoreFiles": [
         "*.js.map",
         "*.js",
