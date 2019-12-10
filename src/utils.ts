@@ -4,6 +4,7 @@ import axios from "axios"
 import { async } from "rxjs/internal/scheduler/async";
 import { AstParser } from "./parser";
 import { DataExtractor } from "./extractor";
+import path from "path"
 
 export function writeFile(name, object){
     writeJson(name, object, {spaces:2}, err => {
@@ -40,10 +41,17 @@ export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders)
     
     let results = []
     files.forEach(file => {
-        console.log("Parsing "+ file)
+        let filePath = file
+        
+        if(!path.isAbsolute(file)){
+            filePath = path.sep + file
+        }
+
+        console.log("Parsing " + filePath)
+        
         const ast = parser.parse(file)
         const data = extractor.getClassMethods(ast)      
-        results.push({filePath:file, result: data})
+        results.push({filePath:filePath, result: data})
     });
     
     console.log("Save data")
