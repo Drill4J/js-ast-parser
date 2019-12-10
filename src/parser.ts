@@ -13,7 +13,7 @@ export class AstParser {
     constructor(){
         this.options =  {
             comment: false,
-            jsx: false
+            jsx: true
         };
     }
 
