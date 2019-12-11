@@ -57,8 +57,55 @@ function visitFunctionExpression(node){
     return method;
 }
 
+function visitCallExpression(node){
+    const method = new Astmethod()
+
+    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
+        method.name = node.id.name
+    }
+    
+    node.init.arguments.forEach(arg => {
+        if(arg.type === AST_NODE_TYPES.ArrowFunctionExpression){
+            arg.params.forEach(param => {
+                if(param.type === AST_NODE_TYPES.Identifier){
+                    method.params.push(param.name)
+                }
+                else if (param.type === AST_NODE_TYPES.ObjectPattern){
+                    const properties = []
+                    param.properties.forEach(prop => {
+                        if(prop.type === AST_NODE_TYPES.Property){
+                            properties.push(prop.key.name)
+                      }
+                    })
+                    method.params.push(`{ ${properties.join(", ")} }`)
+                }
+            })
+        }
+        else if(arg.type === AST_NODE_TYPES.SequenceExpression){
+            arg.expressions.forEach(exp => {
+                if(exp.type === AST_NODE_TYPES.Identifier){
+                    method.params.push(exp.name)
+                }
+                else if (exp.type === AST_NODE_TYPES.ObjectExpression) {
+                    exp.properties.forEach(prop => {
+                        if(prop.type === AST_NODE_TYPES.Property){
+                            method.params.push(prop.key.name)
+                        }
+                    })
+                }
+            })
+        }
+
+    });
+
+    method.loc = node.init.loc
+    method.body = deleteLocationData(node.init)
+
+    return method;
+}
+
 function processFunctionExpression(node){
-    let result;
+    let result = null;
     traverser.traverse(node, {
         enter(innerNode: Node) {
           switch(innerNode.type) {
@@ -66,13 +113,19 @@ function processFunctionExpression(node){
                 // const name = () => {}
                 if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
                     result = visitFunctionExpression(innerNode)
-                    this.break()
+                    this.break();
                 }
                 //const name = function() {}
                 else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
                     result = visitFunctionExpression(innerNode)
-                    this.break()
+                    this.break();
                 }
+                // const hello = dashboard((name, { title, agent })
+                else if (innerNode.init.type === AST_NODE_TYPES.CallExpression){
+                    result = visitCallExpression(innerNode)
+                    this.break();
+                }
+
             break;
         }
     }});
@@ -103,5 +156,6 @@ export function extractMethods(program: Program){
                     this.skip()
                     methods.push(processFunctionExpression(node))   
             }}})
-    return methods
+
+    return methods.filter(it => it != null)
 }

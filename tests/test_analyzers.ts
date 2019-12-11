@@ -90,3 +90,22 @@ test('test can find arrow function', t => {
     
     t.assert(data.methods.length === 1)
 });
+
+test('test can find arrow function with call expression', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/arrow_function_call_expression.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 1)
+
+    t.is(data.className, undefined)
+
+    const method = data.methods[0]
+    t.is(method.name, "hello")
+    t.deepEqual(method.params, ['name', '{ title, agent }'])
+    t.deepEqual(method.loc, {start: { line: 3, column: 21 } , end: { line: 5, column: 2 } })
+    t.truthy(method.body)
+});
+
