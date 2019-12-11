@@ -3,7 +3,7 @@ import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { MainMethod } from "./extract_all_methods";
 
-export function deleteLocationData(method: MainMethod){
+export function deleteLocationData(method){
     traverser.traverse(method, {
         enter(node: Node) {
             delete node.loc

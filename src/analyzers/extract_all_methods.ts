@@ -39,25 +39,47 @@ function processFunctionDeclaration(node: FunctionDeclaration){
     return method
 }
 
-// function processFunctionExpression(node){
-//     traverser.traverse(node, {
-//         enter(innerNode: Node) {
-//           switch(innerNode.type) {
-//             case AST_NODE_TYPES.VariableDeclarator:
-//                 // const name = () => {}
-//                 if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
-//                     methods.push(innerNode.init)
-//                     this.break()
-//                 }
-//                 // const name = function() {}
-//                 else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
-//                     methods.push(innerNode.init)
-//                     this.break()
-//                 }
-//             break;
-//         }
-//     }});
-// }
+function visitFunctionExpression(node){
+    const method = new Astmethod()
+
+    node.init.params.forEach(param => {
+        if(param.type == AST_NODE_TYPES.Identifier){
+            method.params.push(param.name)
+         }
+    })
+
+    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
+        method.name = node.id.name
+    }
+    
+    method.loc = node.init.loc
+    method.body = deleteLocationData(node.init)
+
+    return method;
+}
+
+function processFunctionExpression(node){
+    let result;
+    traverser.traverse(node, {
+        enter(innerNode: Node) {
+          switch(innerNode.type) {
+            case AST_NODE_TYPES.VariableDeclarator:
+                // const name = () => {}
+                if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
+                    result = visitFunctionExpression(innerNode)
+                    this.break()
+                }
+                //const name = function() {}
+                else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
+                    result = visitFunctionExpression(innerNode)
+                    this.break()
+                }
+            break;
+        }
+    }});
+
+    return result
+}
 
 export function extractMethods(program: Program){
     const methods: Astmethod[] = [] 
@@ -80,7 +102,7 @@ export function extractMethods(program: Program){
 
                 case AST_NODE_TYPES.VariableDeclaration:
                     this.skip()
-                    // methods.push(processFunctionExpression(node))   
+                    methods.push(processFunctionExpression(node))   
             }}})
     return methods
 }

@@ -37,6 +37,40 @@ test('test can find FunctionDeclaration', t => {
     t.truthy(method.body)
 })
 
+test('test can find ArrowFunctionExpression', t => {
+    const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/arrow_function.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 1)
+    t.is(data.className, undefined)
+
+    const method = data.methods[0]
+    t.is(method.name, "newMethod")
+    t.deepEqual(method.params, ["name"])
+    t.deepEqual(method.loc, {start: { line: 1, column: 18 } , end: { line: 3, column: 1 } })
+    t.truthy(method.body)
+})
+
+test('test can find FunctionExpression', t => {
+    const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/function_expression.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 1)
+    t.is(data.className, undefined)
+
+    const method = data.methods[0]
+    t.is(method.name, "hello")
+    t.deepEqual(method.params, ["name"])
+    t.deepEqual(method.loc, {start: { line: 1, column: 14 } , end: { line: 3, column: 1 } })
+    t.truthy(method.body)
+})
+
 test('test can find all methods', t => {
 	const parser = new AstParser()
     const extractor = new DataExtractor();
@@ -47,12 +81,12 @@ test('test can find all methods', t => {
     t.assert(data.methods.length === 16)
 });
 
-// test('test can find arrow function', t => {
-// 	const parser = new AstParser()
-//     const extractor = new DataExtractor();
+test('test can find arrow function', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
 
-//     const ast = parser.parse("./fixtures/original/selectable-table.tsx")
-//     const data = extractor.getClassMethods(ast)
+    const ast = parser.parse("./fixtures/original/selectable-table.tsx")
+    const data = extractor.getClassMethods(ast)
     
-//     t.assert(data.methods.length === 1)
-// });
+    t.assert(data.methods.length === 1)
+});
