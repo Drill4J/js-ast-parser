@@ -179,8 +179,8 @@ export function extractMethods(program: Program){
 
                 // function name() {}
                 case AST_NODE_TYPES.FunctionDeclaration:
+                    this.skip()
                     methods.push(processFunctionDeclaration(node))
-                    this.break()
                     break;
 
                 case AST_NODE_TYPES.VariableDeclaration:

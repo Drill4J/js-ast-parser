@@ -128,3 +128,14 @@ test('test can find functions witf severalCall expr', t => {
     
     t.assert(data.methods.length === 2)
 });
+
+
+test('test can find 2 function declarations', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/private_route.tsx")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 2)
+});
