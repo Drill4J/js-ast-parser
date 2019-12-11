@@ -30,6 +30,9 @@ function processFunctionDeclaration(node: FunctionDeclaration){
         if(param.type == AST_NODE_TYPES.Identifier){
            method.params.push(param.name)
         }
+        else if (param.type === AST_NODE_TYPES.RestElement && param.argument.type === AST_NODE_TYPES.Identifier){
+            method.params.push(param.argument.name)
+        }
     });
 
     method.loc = node.loc

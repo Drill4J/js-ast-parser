@@ -139,3 +139,16 @@ test('test can find 2 function declarations', t => {
     
     t.assert(data.methods.length === 2)
 });
+
+test('test can exract vararg pararms', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/vararg_params.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 1)
+
+    const method = data.methods[0]
+    t.truthy(method.params.length > 0)
+});
