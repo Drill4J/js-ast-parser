@@ -16,20 +16,6 @@ export class DataExtractor {
             methods : methods
         }
 
-        // methods.forEach(m  => {
-            
-        //     // const methodName = extractMethodName(m)
-        //     // const params = extractMethodParams(m)
-            
-        //     // const method = {
-        //     //     name: methodName,
-        //     //     params: params,
-        //     //     loc: m.loc,
-        //     //     body: deleteLocationData(m)
-        //     // }
-
-        //     // result.methods.push(method)
-        // })
         return result
     }
 }

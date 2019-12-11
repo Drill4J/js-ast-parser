@@ -59,7 +59,11 @@ function visitFunctionExpression(node){
 
 function visitCallExpression(node){
     // filter for const Icon = singleBar.icon('div');
-    const args = node.init.arguments.filter(it => it.type === AST_NODE_TYPES.ArrowFunctionExpression || it.type === AST_NODE_TYPES.SequenceExpression)
+    const args = node.init.arguments.filter(it => { 
+        return it.type === AST_NODE_TYPES.ArrowFunctionExpression || 
+        it.type === AST_NODE_TYPES.SequenceExpression || 
+        it.type === AST_NODE_TYPES.CallExpression 
+    })
 
     if(args.length == 0){
         return null
@@ -102,6 +106,26 @@ function visitCallExpression(node){
                 }
             })
         }
+        else if(arg.type === AST_NODE_TYPES.CallExpression){
+            arg.arguments.forEach(arg => {
+                if(arg.type === AST_NODE_TYPES.ArrowFunctionExpression){
+                    arg.params.forEach(param => {
+                        if(param.type === AST_NODE_TYPES.Identifier){
+                            method.params.push(param.name)
+                        }
+                        else if (param.type === AST_NODE_TYPES.ObjectPattern){
+                            const properties = []
+                            param.properties.forEach(prop => {
+                                if(prop.type === AST_NODE_TYPES.Property){
+                                    properties.push(prop.key.name)
+                              }
+                            })
+                            method.params.push(`{ ${properties.join(", ")} }`)
+                        }
+                    })
+                }
+            })
+        }
 
     });
 
@@ -131,7 +155,7 @@ function processFunctionExpression(node){
                 else if (innerNode.init.type === AST_NODE_TYPES.CallExpression){
                     result = visitCallExpression(innerNode)
                     this.break();
-                }
+              }
 
             break;
         }

@@ -116,6 +116,15 @@ test('test can find only functions', t => {
     const ast = parser.parse("./fixtures/original/single_bar.tsx")
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 1)
+    t.assert(data.methods.length === 2)
 });
 
+test('test can find functions witf severalCall expr', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/side_bar.tsx")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 2)
+});
