@@ -1,10 +1,9 @@
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpression, FunctionExpression, ExportNamedDeclaration } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
-import { Astmethod } from "src/model/method";
 import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
-import { METHODS } from "http";
+import { Astmethod } from "../item/ast_method";
 
 export type MainMethod = FunctionDeclaration | MethodDefinition | ExportNamedDeclaration | ArrowFunctionExpression | FunctionExpression
 

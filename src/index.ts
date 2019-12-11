@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 import program from 'commander';
-import { AstParser } from './parser';
-import { DataExtractor } from './extractor';
-import { saveData, getFiles, parseFiles } from './utils';
+import { parseFiles } from './utils';
 import { readFileSync } from 'fs';
 
 program
