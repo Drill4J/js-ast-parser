@@ -1,42 +1,86 @@
-
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpression, FunctionExpression, ExportNamedDeclaration } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Astmethod } from "src/model/method";
+import { extractMethodParams } from "./extract_method_params";
+import { deleteLocationData } from "./delete_location_data";
+import { METHODS } from "http";
 
 export type MainMethod = FunctionDeclaration | MethodDefinition | ExportNamedDeclaration | ArrowFunctionExpression | FunctionExpression
 
+function processMethodDefinitiion(node: MethodDefinition){
+    const method = new Astmethod()
+    if(node.key.type == AST_NODE_TYPES.Identifier){
+        method.name = node.key.name
+    }
+
+    method.params = extractMethodParams(node)
+    method.loc = node.loc
+    method.body = deleteLocationData(node)
+
+    return method
+}
+
+function processFunctionDeclaration(node: FunctionDeclaration){
+    const method = new Astmethod()
+    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
+        method.name = node.id.name
+    }
+
+    node.params.forEach(param => {
+        if(param.type == AST_NODE_TYPES.Identifier){
+           method.params.push(param.name)
+        }
+    });
+
+    method.loc = node.loc
+    method.body = deleteLocationData(node)
+
+    return method
+}
+
+// function processFunctionExpression(node){
+//     traverser.traverse(node, {
+//         enter(innerNode: Node) {
+//           switch(innerNode.type) {
+//             case AST_NODE_TYPES.VariableDeclarator:
+//                 // const name = () => {}
+//                 if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
+//                     methods.push(innerNode.init)
+//                     this.break()
+//                 }
+//                 // const name = function() {}
+//                 else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
+//                     methods.push(innerNode.init)
+//                     this.break()
+//                 }
+//             break;
+//         }
+//     }});
+// }
+
 export function extractMethods(program: Program){
-    const methods: MainMethod[] = [] 
+    const methods: Astmethod[] = [] 
     traverser.traverse(program, {
         enter(node: Node) {
             switch(node.type){
+                // class Foo {
+                //   name() {}
+                // }
                 case AST_NODE_TYPES.MethodDefinition:
-                    methods.push(node)
+                    this.skip()
+                    methods.push(processMethodDefinitiion(node))
                     break;
 
+                // function name() {}
                 case AST_NODE_TYPES.FunctionDeclaration:
-                    methods.push(node)
+                    methods.push(processFunctionDeclaration(node))
+                    this.break()
                     break;
 
                 case AST_NODE_TYPES.VariableDeclaration:
                     this.skip()
-                    traverser.traverse(node, {
-                        enter(innerNode: Node) {
-                          switch(innerNode.type) {
-                            case AST_NODE_TYPES.VariableDeclarator:
-                              // const name = () => {}
-                                if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
-                                    methods.push(innerNode.init)
-                                    this.break()
-                                }
-                                // const name = function() {}
-                                else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
-                                    methods.push(innerNode.init)
-                                    this.break()
-                                }
-                            break;
-                        }
-                }});    
+                    // methods.push(processFunctionExpression(node))   
             }}})
     return methods
 }
