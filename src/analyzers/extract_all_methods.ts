@@ -58,6 +58,13 @@ function visitFunctionExpression(node){
 }
 
 function visitCallExpression(node){
+    // filter for const Icon = singleBar.icon('div');
+    const args = node.init.arguments.filter(it => it.type === AST_NODE_TYPES.ArrowFunctionExpression || it.type === AST_NODE_TYPES.SequenceExpression)
+
+    if(args.length == 0){
+        return null
+    }
+
     const method = new Astmethod()
 
     if(node.id && node.id.type == AST_NODE_TYPES.Identifier){

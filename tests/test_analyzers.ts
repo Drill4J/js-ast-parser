@@ -109,3 +109,13 @@ test('test can find arrow function with call expression', t => {
     t.truthy(method.body)
 });
 
+test('test can find only functions', t => {
+	const parser = new AstParser()
+    const extractor = new DataExtractor();
+
+    const ast = parser.parse("./fixtures/original/single_bar.tsx")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 1)
+});
+
