@@ -1,33 +1,30 @@
-import { MethodDefinition, FunctionExpression } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
-import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { MainMethod } from "./extract_all_methods";
+import { Parameter } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 
-export function extractMethodParams(method: MainMethod){
+export function extractMethodParams(method){
     let params = [];
-    traverser.traverse(method, {
-        enter(node){
-            if(node.type == AST_NODE_TYPES.FunctionExpression){
-                this.break()
-                params = extractParams(node)
-            }
-        }
-    })
+    if(method.type === AST_NODE_TYPES.MethodDefinition){
+        return extractParams(method.value.params)
+    }
+    else if(method.type === AST_NODE_TYPES.FunctionDeclaration){
+        return extractParams(method.params)
+    }
+
     return params;
 }
 
-function extractParams(expression: FunctionExpression){
-    const paramNames = []
-
-    expression.params.forEach(p =>{
-        traverser.traverse(p, {
-            enter(node){
-                if(node.type == AST_NODE_TYPES.Identifier){
-                    paramNames.push(node.name)
-                }
-            }})
+function extractParams(params: Parameter[]){
+    let result = [];
+    
+    params.forEach(p => {
+        if(p.type === AST_NODE_TYPES.Identifier){
+            result.push(p.name)
+        }
+        else if(p.type === AST_NODE_TYPES.RestElement && p.argument.type === AST_NODE_TYPES.Identifier){
+            result.push(p.argument.name)
+        }
     })
 
-    
-    return paramNames
+
+    return result
 }

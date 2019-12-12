@@ -4,37 +4,23 @@ import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpr
 import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
 import { Astmethod } from "../item/ast_method";
-
-export type MainMethod = FunctionDeclaration | MethodDefinition | ExportNamedDeclaration | ArrowFunctionExpression | FunctionExpression
+import { getFunctionName } from "./helpers";
 
 function processMethodDefinitiion(node: MethodDefinition){
     const method = new Astmethod()
-    if(node.key.type == AST_NODE_TYPES.Identifier){
-        method.name = node.key.name
-    }
-
-    method.params = extractMethodParams(node)
+    method.name = getFunctionName(node)
     method.loc = node.loc
+    method.params = extractMethodParams(node)
     method.body = deleteLocationData(node)
-
+    
     return method
 }
 
 function processFunctionDeclaration(node: FunctionDeclaration){
     const method = new Astmethod()
-    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
-        method.name = node.id.name
-    }
+    method.name = getFunctionName(node)
 
-    node.params.forEach(param => {
-        if(param.type == AST_NODE_TYPES.Identifier){
-           method.params.push(param.name)
-        }
-        else if (param.type === AST_NODE_TYPES.RestElement && param.argument.type === AST_NODE_TYPES.Identifier){
-            method.params.push(param.argument.name)
-        }
-    });
-
+    method.params = extractMethodParams(node)
     method.loc = node.loc
     method.body = deleteLocationData(node)
 
