@@ -1,13 +1,21 @@
 import test from 'ava';
-import { parseFiles } from 'src/utils';
 import { AstParser } from 'src/parser';
 import { DataExtractor } from 'src/extractor';
 
-test('test can find MethodDefinition', t => {
-    const parser = new AstParser()
-    const extractor = new DataExtractor();
+const parser = new AstParser()
+const extractor = new DataExtractor();
 
-    const ast = parser.parse("./fixtures/original/method_definition.ts")
+test('test can find MethodDefinition', t => {
+    const source = 
+    `
+    class Test {
+        newMethod(name: string){
+            console.log(name)
+        }
+    }
+    `
+
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.is(data.methods.length, 1)
@@ -16,15 +24,19 @@ test('test can find MethodDefinition', t => {
     const method = data.methods[0]
     t.is(method.name, "newMethod")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 2, column: 4} , end: { line: 4, column: 5} })
+    t.deepEqual(method.loc, {start: { line: 3, column: 8 } , end: { line: 5, column: 9 } })
     t.truthy(method.body)
 })
 
 test('test can find FunctionDeclaration', t => {
-    const parser = new AstParser()
-    const extractor = new DataExtractor();
+    const source = 
+    `
+    export function newMethod(name: string) {
+        console.log(name)
+    }
+    `
 
-    const ast = parser.parse("./fixtures/original/function_declaration.ts")
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.is(data.methods.length, 1)
@@ -33,15 +45,19 @@ test('test can find FunctionDeclaration', t => {
     const method = data.methods[0]
     t.is(method.name, "newMethod")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 1, column: 7 } , end: { line: 3, column: 1 } })
+    t.deepEqual(method.loc, {start: { line: 2, column: 11 } , end: { line: 4, column: 5 } })
     t.truthy(method.body)
 })
 
 test('test can find ArrowFunctionExpression', t => {
-    const parser = new AstParser()
-    const extractor = new DataExtractor();
+    const source = 
+    `
+    const newMethod = (name) => {
+        console.log(name)
+    }
+    `
 
-    const ast = parser.parse("./fixtures/original/arrow_function.ts")
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.is(data.methods.length, 1)
@@ -50,15 +66,19 @@ test('test can find ArrowFunctionExpression', t => {
     const method = data.methods[0]
     t.is(method.name, "newMethod")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 1, column: 18 } , end: { line: 3, column: 1 } })
+    t.deepEqual(method.loc, {start: { line: 2, column: 22 } , end: { line: 4, column: 5 } })
     t.truthy(method.body)
 })
 
 test('test can find FunctionExpression', t => {
-    const parser = new AstParser()
-    const extractor = new DataExtractor();
+        const source = 
+        `
+        const hello = function (name) {
+            console.log(name)
+        }
+        `
 
-    const ast = parser.parse("./fixtures/original/function_expression.ts")
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.is(data.methods.length, 1)
@@ -67,14 +87,11 @@ test('test can find FunctionExpression', t => {
     const method = data.methods[0]
     t.is(method.name, "hello")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 1, column: 14 } , end: { line: 3, column: 1 } })
+    t.deepEqual(method.loc, {start: { line: 2, column: 22 } , end: { line: 4, column: 9 } })
     t.truthy(method.body)
 })
 
 test('test can find all methods', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
-
     const ast = parser.parse("./fixtures/original/episode.ts")
     const data = extractor.getClassMethods(ast)
     
@@ -82,9 +99,6 @@ test('test can find all methods', t => {
 });
 
 test('test can find arrow function', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
-
     const ast = parser.parse("./fixtures/original/selectable-table.tsx")
     const data = extractor.getClassMethods(ast)
     
@@ -92,10 +106,16 @@ test('test can find arrow function', t => {
 });
 
 test('test can find arrow function with call expression', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
+    const source =
+    `
+    const dashboard = undefined;
 
-    const ast = parser.parse("./fixtures/original/arrow_function_call_expression.ts")
+    export const hello = dashboard((name, { title, agent }) => {
+
+    })
+    `
+
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.assert(data.methods.length === 1)
@@ -105,14 +125,11 @@ test('test can find arrow function with call expression', t => {
     const method = data.methods[0]
     t.is(method.name, "hello")
     t.deepEqual(method.params, ['name', '{ title, agent }'])
-    t.deepEqual(method.loc, {start: { line: 3, column: 21 } , end: { line: 5, column: 2 } })
+    t.deepEqual(method.loc, {start: { line: 4, column: 25 } , end: { line: 6, column: 6 } })
     t.truthy(method.body)
 });
 
 test('test can find only functions', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
-
     const ast = parser.parse("./fixtures/original/single_bar.tsx")
     const data = extractor.getClassMethods(ast)
     
@@ -120,9 +137,6 @@ test('test can find only functions', t => {
 });
 
 test('test can find functions witf severalCall expr', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
-
     const ast = parser.parse("./fixtures/original/side_bar.tsx")
     const data = extractor.getClassMethods(ast)
     
@@ -131,9 +145,6 @@ test('test can find functions witf severalCall expr', t => {
 
 
 test('test can find 2 function declarations', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
-
     const ast = parser.parse("./fixtures/original/private_route.tsx")
     const data = extractor.getClassMethods(ast)
     
@@ -141,10 +152,14 @@ test('test can find 2 function declarations', t => {
 });
 
 test('test can exract vararg pararms', t => {
-	const parser = new AstParser()
-    const extractor = new DataExtractor();
+    const source =
+    `
+    export function composeValidators(...validators: FormValidator[]): FormValidator {
+        return (values) => Object.assign({}, ...validators.map((validator) => validator(values)));
+    }
+    `
 
-    const ast = parser.parse("./fixtures/original/vararg_params.ts")
+    const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
     t.assert(data.methods.length === 1)
