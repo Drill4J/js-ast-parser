@@ -63,8 +63,10 @@ function extract(params){
             })
         }
         else if(p.type === AST_NODE_TYPES.CallExpression){
-            result.push(p.callee.name)
-            result.push(extract(p.arguments))
+            result.push(...extract(p.arguments))
+        }
+        else if(p.type === AST_NODE_TYPES.AssignmentPattern){
+            result.push(p.left.name)
         }
     })
 

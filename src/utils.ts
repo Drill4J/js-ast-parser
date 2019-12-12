@@ -29,7 +29,7 @@ export function saveData(url:string, data){
             console.error(err);
         })
     } else {
-        writeFile("all_result.json", data)
+        writeFile("/tmp/results.json", data)
     }
 }
 
@@ -37,6 +37,8 @@ export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders)
     const parser = new AstParser()
     const extractor = new DataExtractor();
     
+    console.log(`Start parsing project ${projectName}`)
+
     const files = getFiles(folder, ignoreFiles).filter(it => !ignoreFolders.some(x => it.includes(x)))
     
     let results = []
