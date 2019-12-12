@@ -1,50 +1,10 @@
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { Node, MethodDefinition, Program, FunctionDeclaration, ArrowFunctionExpression, FunctionExpression, ExportNamedDeclaration } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Node, Program } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
 import { Astmethod } from "../item/ast_method";
-import { getFunctionName } from "./helpers";
-
-function processMethodDefinitiion(node: MethodDefinition){
-    const method = new Astmethod()
-    method.name = getFunctionName(node)
-    method.loc = node.loc
-    method.params = extractMethodParams(node)
-    method.body = deleteLocationData(node)
-    
-    return method
-}
-
-function processFunctionDeclaration(node: FunctionDeclaration){
-    const method = new Astmethod()
-    method.name = getFunctionName(node)
-
-    method.params = extractMethodParams(node)
-    method.loc = node.loc
-    method.body = deleteLocationData(node)
-
-    return method
-}
-
-function visitFunctionExpression(node){
-    const method = new Astmethod()
-
-    node.init.params.forEach(param => {
-        if(param.type == AST_NODE_TYPES.Identifier){
-            method.params.push(param.name)
-         }
-    })
-
-    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
-        method.name = node.id.name
-    }
-    
-    method.loc = node.init.loc
-    method.body = deleteLocationData(node.init)
-
-    return method;
-}
+import { getFunctionName, MainMethod } from "./helpers";
 
 function visitCallExpression(node){
     // filter for const Icon = singleBar.icon('div');
@@ -124,7 +84,55 @@ function visitCallExpression(node){
     return method;
 }
 
-function processFunctionExpression(node){
+export function extractMethods(program: Program){
+    const methods: Astmethod[] = [] 
+    traverser.traverse(program, {
+        enter(node: Node) {
+            switch(node.type){
+                // class Foo {
+                //   name() {}
+                // }
+                case AST_NODE_TYPES.MethodDefinition:
+                    this.skip()
+                    methods.push(extractMethodData(node))
+                    break;
+
+                // function name() {}
+                case AST_NODE_TYPES.FunctionDeclaration:
+                    this.skip()
+                    methods.push(extractMethodData(node))
+                    break;
+
+                case AST_NODE_TYPES.VariableDeclaration:
+                    this.skip()
+                    methods.push(processVariableDeclaration(node))   
+            }}})
+
+    return methods.filter(it => it != null)
+}
+
+function extractMethodData(node: MainMethod) : Astmethod{
+    const method = new Astmethod()
+    method.name = getFunctionName(node)
+    method.loc = node.loc
+    method.params = extractMethodParams(node)
+    method.body = deleteLocationData(node)
+    
+    return method
+}
+
+function visitFunctionExpression(node){
+    const method = new Astmethod()
+
+    method.name = getFunctionName(node)
+    method.params = extractMethodParams(node.init)
+    method.loc = node.loc
+    method.body = deleteLocationData(node.init)
+
+    return method;
+}
+
+function processVariableDeclaration(node){
     let result = null;
     traverser.traverse(node, {
         enter(innerNode: Node) {
@@ -151,31 +159,4 @@ function processFunctionExpression(node){
     }});
 
     return result
-}
-
-export function extractMethods(program: Program){
-    const methods: Astmethod[] = [] 
-    traverser.traverse(program, {
-        enter(node: Node) {
-            switch(node.type){
-                // class Foo {
-                //   name() {}
-                // }
-                case AST_NODE_TYPES.MethodDefinition:
-                    this.skip()
-                    methods.push(processMethodDefinitiion(node))
-                    break;
-
-                // function name() {}
-                case AST_NODE_TYPES.FunctionDeclaration:
-                    this.skip()
-                    methods.push(processFunctionDeclaration(node))
-                    break;
-
-                case AST_NODE_TYPES.VariableDeclaration:
-                    this.skip()
-                    methods.push(processFunctionExpression(node))   
-            }}})
-
-    return methods.filter(it => it != null)
 }

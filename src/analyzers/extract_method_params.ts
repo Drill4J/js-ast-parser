@@ -4,18 +4,24 @@ import { Parameter } from "@typescript-eslint/typescript-estree/dist/ts-estree/t
 export function extractMethodParams(method){
     let params = [];
     if(method.type === AST_NODE_TYPES.MethodDefinition){
-        return extractParams(method.value.params)
+        return extract(method.value.params)
     }
     else if(method.type === AST_NODE_TYPES.FunctionDeclaration){
-        return extractParams(method.params)
+        return extract(method.params)
+    }
+    else if(method.type === AST_NODE_TYPES.ArrowFunctionExpression){
+        return extract(method.params)
+    }
+    else if(method.type === AST_NODE_TYPES.FunctionExpression){
+        return extract(method.params)
     }
 
     return params;
 }
 
-function extractParams(params: Parameter[]){
+function extract(params: Parameter[]){
     let result = [];
-    
+
     params.forEach(p => {
         if(p.type === AST_NODE_TYPES.Identifier){
             result.push(p.name)

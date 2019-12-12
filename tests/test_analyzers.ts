@@ -66,7 +66,7 @@ test('test can find ArrowFunctionExpression', t => {
     const method = data.methods[0]
     t.is(method.name, "newMethod")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 2, column: 22 } , end: { line: 4, column: 5 } })
+    t.deepEqual(method.loc, {start: { line: 2, column: 10 } , end: { line: 4, column: 5 } })
     t.truthy(method.body)
 })
 
@@ -87,7 +87,7 @@ test('test can find FunctionExpression', t => {
     const method = data.methods[0]
     t.is(method.name, "hello")
     t.deepEqual(method.params, ["name"])
-    t.deepEqual(method.loc, {start: { line: 2, column: 22 } , end: { line: 4, column: 9 } })
+    t.deepEqual(method.loc, {start: { line: 2, column: 14 } , end: { line: 4, column: 9 } })
     t.truthy(method.body)
 })
 
