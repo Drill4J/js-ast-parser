@@ -133,14 +133,14 @@ test('test can find only functions', t => {
     const ast = parser.parse("./fixtures/original/single_bar.tsx")
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 2)
+    t.assert(data.methods.length === 5)
 });
 
 test('test can find functions witf severalCall expr', t => {
     const ast = parser.parse("./fixtures/original/side_bar.tsx")
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 2)
+    t.is(data.methods.length, 4)
 });
 
 
@@ -148,7 +148,7 @@ test('test can find 2 function declarations', t => {
     const ast = parser.parse("./fixtures/original/private_route.tsx")
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 2)
+    t.is(data.methods.length, 2)
 });
 
 test('test can exract vararg pararms', t => {

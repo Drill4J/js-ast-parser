@@ -6,84 +6,6 @@ import { deleteLocationData } from "./delete_location_data";
 import { Astmethod } from "../item/ast_method";
 import { getFunctionName, MainMethod } from "./helpers";
 
-function visitCallExpression(node){
-    // filter for const Icon = singleBar.icon('div');
-    const args = node.init.arguments.filter(it => { 
-        return it.type === AST_NODE_TYPES.ArrowFunctionExpression || 
-        it.type === AST_NODE_TYPES.SequenceExpression || 
-        it.type === AST_NODE_TYPES.CallExpression 
-    })
-
-    if(args.length == 0){
-        return null
-    }
-
-    const method = new Astmethod()
-
-    if(node.id && node.id.type == AST_NODE_TYPES.Identifier){
-        method.name = node.id.name
-    }
-    
-    node.init.arguments.forEach(arg => {
-        if(arg.type === AST_NODE_TYPES.ArrowFunctionExpression){
-            arg.params.forEach(param => {
-                if(param.type === AST_NODE_TYPES.Identifier){
-                    method.params.push(param.name)
-                }
-                else if (param.type === AST_NODE_TYPES.ObjectPattern){
-                    const properties = []
-                    param.properties.forEach(prop => {
-                        if(prop.type === AST_NODE_TYPES.Property){
-                            properties.push(prop.key.name)
-                      }
-                    })
-                    method.params.push(`{ ${properties.join(", ")} }`)
-                }
-            })
-        }
-        else if(arg.type === AST_NODE_TYPES.SequenceExpression){
-            arg.expressions.forEach(exp => {
-                if(exp.type === AST_NODE_TYPES.Identifier){
-                    method.params.push(exp.name)
-                }
-                else if (exp.type === AST_NODE_TYPES.ObjectExpression) {
-                    exp.properties.forEach(prop => {
-                        if(prop.type === AST_NODE_TYPES.Property){
-                            method.params.push(prop.key.name)
-                        }
-                    })
-                }
-            })
-        }
-        else if(arg.type === AST_NODE_TYPES.CallExpression){
-            arg.arguments.forEach(arg => {
-                if(arg.type === AST_NODE_TYPES.ArrowFunctionExpression){
-                    arg.params.forEach(param => {
-                        if(param.type === AST_NODE_TYPES.Identifier){
-                            method.params.push(param.name)
-                        }
-                        else if (param.type === AST_NODE_TYPES.ObjectPattern){
-                            const properties = []
-                            param.properties.forEach(prop => {
-                                if(prop.type === AST_NODE_TYPES.Property){
-                                    properties.push(prop.key.name)
-                              }
-                            })
-                            method.params.push(`{ ${properties.join(", ")} }`)
-                        }
-                    })
-                }
-            })
-        }
-
-    });
-
-    method.loc = node.init.loc
-    method.body = deleteLocationData(node.init)
-
-    return method;
-}
-
 export function extractMethods(program: Program){
     const methods: Astmethod[] = [] 
     traverser.traverse(program, {
@@ -132,6 +54,22 @@ function visitFunctionExpression(node){
     return method;
 }
 
+function visitCallExpression(node){
+    if(node.init.callee.type !== AST_NODE_TYPES.MemberExpression && node.init.callee.type !== AST_NODE_TYPES.Identifier){
+        return null
+    }
+    
+    const method = new Astmethod()
+
+    method.name = getFunctionName(node)
+    method.params = extractMethodParams(node.init)
+
+    method.loc = node.init.loc
+    method.body = deleteLocationData(node.init)
+
+    return method;
+}
+
 function processVariableDeclaration(node){
     let result = null;
     traverser.traverse(node, {
@@ -148,7 +86,7 @@ function processVariableDeclaration(node){
                     result = visitFunctionExpression(innerNode)
                     this.break();
                 }
-                // const hello = dashboard((name, { title, agent })
+                // const hello = dashboard((name, { title, agent }))
                 else if (innerNode.init.type === AST_NODE_TYPES.CallExpression){
                     result = visitCallExpression(innerNode)
                     this.break();
