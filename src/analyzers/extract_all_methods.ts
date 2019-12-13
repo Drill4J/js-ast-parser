@@ -141,17 +141,17 @@ function processVariableDeclaration(node){
           switch(innerNode.type) {
             case AST_NODE_TYPES.VariableDeclarator:
                 // const name = () => {}
-                if (innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
+                if (innerNode.init && innerNode.init.type === AST_NODE_TYPES.ArrowFunctionExpression) {
                     result = visitFunctionExpression(innerNode)
                     this.break();
                 }
                 //const name = function() {}
-                else if (innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
+                else if (innerNode.init && innerNode.init.type === AST_NODE_TYPES.FunctionExpression) {
                     result = visitFunctionExpression(innerNode)
                     this.break();
                 }
                 // const hello = dashboard((name, { title, agent }))
-                else if (innerNode.init.type === AST_NODE_TYPES.CallExpression){
+                else if (innerNode.init && innerNode.init.type === AST_NODE_TYPES.CallExpression){
                     result = visitCallExpression(innerNode)
                     this.break();
               }

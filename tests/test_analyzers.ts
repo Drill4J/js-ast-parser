@@ -177,3 +177,17 @@ test('test can exract from wheels', t => {
     const method = data.methods[0]
     t.is(method.params.length, 4)
 });
+
+test('test can exract from locale', t => {
+    const ast = parser.parse("./fixtures/original/locale.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 4)
+});
+
+test('test can exract from environment', t => {
+    const ast = parser.parse("./fixtures/original/environment.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 1)
+});
