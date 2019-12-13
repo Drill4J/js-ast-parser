@@ -82,5 +82,21 @@ test('test can extract static methods', t => {
     t.deepEqual(method.params, ["text"])
 })
 
+test('test can exract ObjectExpression properties', t => {
+    const source =
+    `
+    export default {
+      hello = "",
+      name: (text) => {}
+    }
+    `
 
+    const ast = parser.parseSource(source)
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 1)
+
+    const method = data.methods[0]
+    t.deepEqual(method.params, ["text"])
+});
 

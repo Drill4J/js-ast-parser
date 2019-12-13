@@ -1,6 +1,6 @@
 import traverser  from "eslint/lib/shared/traverser";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { Node, Program } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Node, Program, ObjectExpression, Property } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
 import { Astmethod } from "../item/ast_method";
@@ -25,17 +25,62 @@ export function extractMethods(program: Program){
                     methods.push(extractMethodData(node))
                     break;
 
+                // const Logo = logo.demo({})
                 case AST_NODE_TYPES.VariableDeclaration:
                     this.skip()
                     methods.push(processVariableDeclaration(node))
                     break;
+                
+                // class Foo {
+                //   static name = () => {}
+                //   static name = name() {}
+                //   static name = function name() {}
+                // }    
                 case AST_NODE_TYPES.ClassProperty:
                     this.skip()
                     methods.push(processClassProperty(node))
-                    break;   
+                    break;
+                
+                // export default {
+                //   name: () => {}
+                // }
+                case AST_NODE_TYPES.ExportDefaultDeclaration:
+                    if (node.declaration.type as string === AST_NODE_TYPES.ObjectExpression) {
+                        this.skip()
+                        Array.prototype.push.apply(methods, processObjectProperties(node))
+                    }
+                    break;
             }}})
 
     return methods.filter(it => it != null)
+}
+
+function processObjectProperties(node){
+    const methods = []
+    const objectNode = node.declaration as unknown as ObjectExpression
+
+    const properties = objectNode.properties.filter(
+        property => {
+           return property.type === AST_NODE_TYPES.Property
+        && property.key.type === AST_NODE_TYPES.Identifier
+        && property.value.type !== AST_NODE_TYPES.AssignmentPattern}
+      ) as Property[] | undefined
+
+    if (properties.length == 0) {
+        return null
+    }
+
+    properties.forEach(prop => {
+        const method = new Astmethod()
+        method.name = getFunctionName(prop)
+        method.loc = prop.loc
+        method.body = deleteLocationData(prop)
+        method.params = extractMethodParams(prop.value)
+
+        methods.push(method)
+    });
+
+    return methods
 }
 
 function processClassProperty(node){
