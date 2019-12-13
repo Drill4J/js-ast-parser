@@ -167,3 +167,13 @@ test('test can exract vararg pararms', t => {
     const method = data.methods[0]
     t.truthy(method.params.length > 0)
 });
+
+test('test can exract from wheels', t => {
+    const ast = parser.parse("./fixtures/original/wheel.effects.ts")
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 1)
+
+    const method = data.methods[0]
+    t.truthy(method.params.length > 0)
+});
