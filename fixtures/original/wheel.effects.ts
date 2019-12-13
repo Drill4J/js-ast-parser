@@ -73,6 +73,7 @@ import {
 
 @Injectable()
 export class WheelEffects {
+  
   public wheelNavigationState$: Observable<SerializedRouterStateSnapshot> = this.actions$.pipe(
     ofType(ROUTER_NAVIGATION),
     map((action: RouterNavigationAction) => action.payload),

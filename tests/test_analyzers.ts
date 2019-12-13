@@ -95,7 +95,7 @@ test('test can find all methods', t => {
     const ast = parser.parse("./fixtures/original/episode.ts")
     const data = extractor.getClassMethods(ast)
     
-    t.is(data.methods.length, 16)
+    t.is(data.methods.length, 17)
 });
 
 test('test can find arrow function', t => {
@@ -172,8 +172,8 @@ test('test can exract from wheels', t => {
     const ast = parser.parse("./fixtures/original/wheel.effects.ts")
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 1)
+    t.is(data.methods.length, 11)
 
     const method = data.methods[0]
-    t.truthy(method.params.length > 0)
+    t.is(method.params.length, 4)
 });

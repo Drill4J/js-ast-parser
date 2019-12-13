@@ -84,7 +84,7 @@ function processObjectProperties(node){
 }
 
 function processClassProperty(node){
-    if(!node.static || node.key.type !== AST_NODE_TYPES.Identifier){
+    if(!node.value || node.value.type === AST_NODE_TYPES.Literal || node.key.type !== AST_NODE_TYPES.Identifier){
         return null              
     }
     const method = new Astmethod()
