@@ -1,7 +1,7 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { FunctionDeclaration, MethodDefinition, VariableDeclarator } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { FunctionDeclaration, MethodDefinition, VariableDeclarator, ClassProperty } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 
-export declare type MainMethod = MethodDefinition | FunctionDeclaration | VariableDeclarator
+export declare type MainMethod = MethodDefinition | FunctionDeclaration | VariableDeclarator | ClassProperty
 
 export function getFunctionName(node: MainMethod): string {
     let  name = ""
@@ -14,8 +14,10 @@ export function getFunctionName(node: MainMethod): string {
     else if(node.type === AST_NODE_TYPES.VariableDeclarator &&  node.id && node.id.type == AST_NODE_TYPES.Identifier){
         return node.id.name
     }
+    else if(node.type === AST_NODE_TYPES.ClassProperty && node.key.type === AST_NODE_TYPES.Identifier){
+        return  node.key.name;
+    }
 
     return name
 }
-
 

@@ -27,10 +27,29 @@ export function extractMethods(program: Program){
 
                 case AST_NODE_TYPES.VariableDeclaration:
                     this.skip()
-                    methods.push(processVariableDeclaration(node))   
+                    methods.push(processVariableDeclaration(node))
+                    break;
+                case AST_NODE_TYPES.ClassProperty:
+                    this.skip()
+                    methods.push(processClassProperty(node))
+                    break;   
             }}})
 
     return methods.filter(it => it != null)
+}
+
+function processClassProperty(node){
+    if(!node.static || node.key.type !== AST_NODE_TYPES.Identifier){
+        return null              
+    }
+    const method = new Astmethod()
+
+    method.name = getFunctionName(node)
+    method.loc = node.loc
+    method.body = deleteLocationData(node)
+    method.params = extractMethodParams(node.value)
+
+    return method
 }
 
 function extractMethodData(node: MainMethod) : Astmethod{

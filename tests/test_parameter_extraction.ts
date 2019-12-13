@@ -57,4 +57,30 @@ test('test can extract parameters with as keyword', t => {
     t.deepEqual(method.params, [])
 })
 
+test('test can extract static methods', t => {
+    const source = 
+    `
+    class Foo {
+        static first = (a,b) => {}
+        static second = function() {}
+        static third = function name(text) {}
+    }
+    `
+
+    const ast = parser.parseSource(source)
+    const data = extractor.getClassMethods(ast)
+    
+    t.is(data.methods.length, 3)
+
+    let method = data.methods[0]
+    t.deepEqual(method.params, ["a", "b"])
+
+    method = data.methods[1]
+    t.deepEqual(method.params, [])
+
+    method = data.methods[2]
+    t.deepEqual(method.params, ["text"])
+})
+
+
 
