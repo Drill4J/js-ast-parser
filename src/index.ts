@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 
 program
   .option('-c, --config <path>', 'path to config.json file')
-  .option('-g, --example-config <path>', 'generate sample config')
+  .option('-gc, --generate-config <path>', 'generate sample config')
   .parse(process.argv);
 
 
@@ -15,7 +15,7 @@ if(program.config){
   parseFiles(config.projectName, config.source_dir, config.url, config.ignoreFiles, config.ignoreFolders)
 } 
 
-if(program.exampleConfig){
+if(program.generateConfig){
   const configSample = {
     "projectName": "demo",
     "source_dir": "./src",
@@ -34,8 +34,8 @@ if(program.exampleConfig){
     ]
   }
 
-  console.log(`Creating sample config file at ${program.exampleConfig}`)
-  writeFile(program.exampleConfig, configSample)
+  console.log(`Creating sample config file at ${program.generateConfig}`)
+  writeFile(program.generateConfig, configSample)
 }
 
 
