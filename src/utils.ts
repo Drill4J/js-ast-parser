@@ -20,10 +20,9 @@ export function getFiles(path: string, ignoreFiles: string[]){
 
 export function saveData(url:string, data){
     if(url){
-        axios.post(url, {
-            data
-        }, { headers : {'Content-Type': 'application/json;charset=UTF-8'}}).then( res =>{
-            console.log(`statusCode: ${res.status}`)
+        axios.post(url, 
+            data, { headers : {'Content-Type': 'application/json;charset=UTF-8'}}).then( res =>{
+            
             console.log(res.data)
         }).catch( err => {
             console.error(err);
@@ -37,7 +36,7 @@ export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders)
     const parser = new AstParser()
     const extractor = new DataExtractor();
     
-    console.log(`Start parsing project ${projectName}`)
+    console.log(`-----\n Start parsing project ${projectName}\n-----`)
 
     const files = getFiles(folder, ignoreFiles).filter(it => !ignoreFolders.some(x => it.includes(x)))
     
@@ -56,7 +55,7 @@ export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders)
         results.push({filePath:filePath, result: data})
     });
     
-    console.log("Save data")
+    console.log("Saving ast data...")
   
     const data = {
         projectName: projectName,
