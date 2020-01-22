@@ -28,39 +28,15 @@ export function saveData(url:string, data){
             console.error(err);
         })
     } else {
-        writeFile("/tmp/results.json", data)
+        const path = "/tmp/results.json"
+
+        console.log(`Saving data to local disk ${parseFiles}`)
+        writeFile(path, data)
     }
 }
 
-export function parseFiles(projectName, folder, url, ignoreFiles, ignoreFolders){
-    const parser = new AstParser()
-    const extractor = new DataExtractor();
+export function parseFiles(files){
     
-    console.log(`-----\n Start parsing project ${projectName}\n-----`)
 
-    const files = getFiles(folder, ignoreFiles).filter(it => !ignoreFolders.some(x => it.includes(x)))
     
-    let results = []
-    files.forEach(file => {
-        let filePath = file
-        
-        if(!path.isAbsolute(file)){
-            filePath = path.sep + file
-        }
-
-        console.log("Parsing " + filePath)
-        
-        const ast = parser.parse(file)
-        const data = extractor.getClassMethods(ast)      
-        results.push({filePath:filePath, result: data})
-    });
-    
-    console.log("Saving ast data...")
-  
-    const data = {
-        projectName: projectName,
-        results: results
-    }
-
-    saveData(url, data)
   }

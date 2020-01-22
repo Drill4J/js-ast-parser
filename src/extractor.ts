@@ -11,11 +11,11 @@ export class DataExtractor {
 
         let  className = extractClassName(ast)
 
-        const result = {
+        const data = {
             className: className,
             methods : methods
         }
 
-        return result
+        return data
     }
 }

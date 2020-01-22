@@ -3,7 +3,7 @@ import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { Node, Program, ObjectExpression, Property } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
-import { Astmethod } from "../item/ast_method";
+import { Astmethod } from "../model/ast_method";
 import { getFunctionName, MainMethod } from "./helpers";
 
 export function extractMethods(program: Program){
