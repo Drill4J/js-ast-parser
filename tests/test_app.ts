@@ -42,3 +42,17 @@ test('test source maps app', t => {
   t.is(files.length,1)
   
 })
+
+test('test source maps app without pattern', t => {
+  const app = new App({
+    projectName: "todomvc",
+    source_dir: "./tests/data",
+    url: ""
+  });
+
+  const files = app.findSourceMaps()
+
+
+  t.is(files.length,0)
+  
+})
