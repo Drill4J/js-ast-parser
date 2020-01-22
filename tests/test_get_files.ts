@@ -8,7 +8,9 @@ test('test main app', t => {
         projectName: "todomvc",
         source_dir: "./tests/data",
         url: "",
-        ignoreFiles: [],
+        ignoreFiles: [
+            "*.js.map",
+        ],
         ignoreFolders: [],
         sourceMaps: []
     }

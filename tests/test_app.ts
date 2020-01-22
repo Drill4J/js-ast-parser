@@ -7,7 +7,9 @@ test('test main app', t => {
     projectName: "todomvc",
     source_dir: "./tests/data",
     url: "",
-    ignoreFiles: [],
+    ignoreFiles: [
+      "*.js.map",
+    ],
     ignoreFolders: [],
     sourceMaps: []
   });
@@ -18,4 +20,25 @@ test('test main app', t => {
 
   t.is(result.length,1)
   t.is(result[0].data.className, "Example")
+})
+
+test('test source maps app', t => {
+  const app = new App({
+    projectName: "todomvc",
+    source_dir: "./tests/data",
+    url: "",
+    ignoreFiles: [],
+    ignoreFolders: [],
+    sourceMaps: {
+      pattern: [
+        "./tests/data/*.js.map"
+      ]
+    }
+  });
+
+  const files = app.findSourceMaps()
+
+
+  t.is(files.length,1)
+  
 })

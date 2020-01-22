@@ -18,9 +18,9 @@ export class App {
         this.config = config
     }
 
-    findSourcemaps() {
+    findSourceMaps() {
         console.log('-----\n Source files parsing anabled \n-----')
-        const pattern = this.config.sourceMaps.pattern
+        const pattern = this.config.sourceMaps.pattern || "*.map"
     
         const files = glob.sync(pattern)
     

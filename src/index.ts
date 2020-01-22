@@ -28,7 +28,7 @@ if(program.config){
   saveData(config.url, data)
 
   if(program.sourceMaps){
-    const data = app.findSourcemaps()
+    const data = app.findSourceMaps()
     saveData(config.url, data)
   }
 }
