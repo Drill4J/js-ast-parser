@@ -19,9 +19,9 @@ export class App {
     }
 
     findSourceMaps(blobPattern:string[] = ["*.map"]) {
-        console.log('-----\n Source files parsing anabled \n-----')
         const pattern = this.config.sourceMaps? this.config.sourceMaps.pattern : blobPattern 
     
+        console.log(`Searching source maps using pattern ${pattern}`)
         const files = glob.sync(pattern)
     
         const data = [];
@@ -84,8 +84,6 @@ export class App {
             results.push({filePath:filePath, data})
         });
     
-        console.log("Saving ast data...")
-  
         return results
     }
 }

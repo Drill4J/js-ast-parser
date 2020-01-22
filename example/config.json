@@ -1,15 +1,24 @@
 {
-    "projectName": "todomvc",
-    "source_dir": "/home/sergey/Github/todomvc/examples/typescript-angular/js",
+    "projectName": "real-world-app",
+    "source_dir": "js",
     "url": "http://localhost:8080/ast",
     "ignoreFiles": [
         "*.js.map",
         "*.js",
-        "_all.ts"
+        "*.html",
+        "*.css",
+        "*.ico",
+        "*.json"
     ],
     "ignoreFolders": [
         "libs",
         "coverage",
         "interfaces"
-    ]
+    ],
+    "sourceMaps": {
+        "url": "http://localhost:8080/source-maps",
+        "pattern":[
+            "./js/**/*.js.map"
+        ]
+    }
 }
