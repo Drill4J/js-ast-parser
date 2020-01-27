@@ -6,4 +6,5 @@ export class Astmethod {
     params: string[] = [];
     loc: SourceLocation;
     body: MainMethod;
+    statements: Set<number>;
 }
