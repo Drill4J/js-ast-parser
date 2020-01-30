@@ -9,12 +9,21 @@ import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 const parser = new AstParser()
 const extractor = new DataExtractor();
 
-test('test can extract Identifier parameters for MethodDefinition', t => {
-    const source = 
-    `
-    class Test {
+test('test can exract expression statements', t => {
+
+    const source = `class Test {
         newMethod(name: string){
             console.log(name)
+            const a = 5;
+          
+            const b = extract()
+            
+            const c =() => {
+            
+            
+            }
+            
+            return 5
         }
     }
     `
@@ -22,19 +31,36 @@ test('test can extract Identifier parameters for MethodDefinition', t => {
     const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
-    t.is(data.methods.length, 1)
+    t.assert(data.methods.length === 1)
 
     const method = data.methods[0]
+    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
+});
 
-    traverser.traverse(method.body, {
-        enter(node: Node) {
-            console.log(node)
-            switch(node.type){
-                case AST_NODE_TYPES.ExpressionStatement:
-                    console.log(node.loc)
+test('test can exract expression statements from ', t => {
+
+    const source = `class Test {
+        static newMethod(name: string){
+            console.log(name)
+            const a = 5;
+          
+            const b = extract()
+            
+            const c =() => {
+            
+            
             }
+            
+            return 5
         }
-    })
+    }
+    `
 
-    t.deepEqual(method.params, ["name"])
-})
+    const ast = parser.parseSource(source)
+    const data = extractor.getClassMethods(ast)
+    
+    t.assert(data.methods.length === 1)
+
+    const method = data.methods[0]
+    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
+});

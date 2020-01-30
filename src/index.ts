@@ -3,11 +3,13 @@ import program from 'commander';
 import { parseFiles, writeFile, saveData, getFiles } from './utils';
 import { readFileSync } from 'fs-extra';
 import { App } from './app';
+import { version } from 'typescript';
 
 program
   .option('-c, --config <path>', 'path to config.json file')
   .option('-g, --generate-config <path>', 'generate sample config')
   .option('-s, --sourceMaps', 'upload source maps')
+  .option('-v, --verbose', 'verbose output')
   .parse(process.argv);
   
 if(!program.config){
@@ -16,7 +18,7 @@ if(!program.config){
 
 let config = JSON.parse(readFileSync(program.config).toString())
 
-const app = new App(config)
+const app = new App(config,program.verbose)
 
 console.log(`-----\n Start parsing project ${config.projectName}\n-----`)
 
