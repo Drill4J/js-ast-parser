@@ -15,7 +15,7 @@ test('test main app', t => {
         sourceMaps: []
     }
 
-    const app = new App(conf);
+    const app = new App(conf, "");
 
     const files = app.findSourceFiles();
 

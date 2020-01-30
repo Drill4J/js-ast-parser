@@ -5,6 +5,7 @@ import { extractMethodParams } from "./extract_method_params";
 import { deleteLocationData } from "./delete_location_data";
 import { Astmethod } from "../model/ast_method";
 import { getFunctionName, MainMethod } from "./helpers";
+import { extractStatements } from "./method_statements";
 
 export function extractMethods(program: Program){
     const methods: Astmethod[] = [] 
@@ -72,6 +73,7 @@ function processObjectProperties(node){
 
     properties.forEach(prop => {
         const method = new Astmethod()
+        method.statements = extractStatements(prop)
         method.name = getFunctionName(prop)
         method.loc = prop.loc
         method.body = deleteLocationData(prop)
@@ -89,6 +91,7 @@ function processClassProperty(node){
     }
     const method = new Astmethod()
 
+    method.statements = extractStatements(node)
     method.name = getFunctionName(node)
     method.loc = node.loc
     method.body = deleteLocationData(node)
@@ -100,6 +103,7 @@ function processClassProperty(node){
 function extractMethodData(node: MainMethod) : Astmethod{
     const method = new Astmethod()
     method.name = getFunctionName(node)
+    method.statements = extractStatements(node)
     method.loc = node.loc
     method.params = extractMethodParams(node)
     method.body = deleteLocationData(node)
