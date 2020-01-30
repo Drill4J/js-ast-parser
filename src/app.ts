@@ -11,11 +11,13 @@ export class App {
     private config: Config;
     private parser: AstParser;
     private extractor: DataExtractor;
+    private isVerbose;
 
-    constructor(config: Config){
-        this.parser = new AstParser()
+    constructor(config: Config, isVerbose: any = false){
+        this.parser = new AstParser();
         this.extractor = new DataExtractor();
-        this.config = config
+        this.config = config;
+        this.isVerbose = isVerbose;
     }
 
     findSourceMaps(blobPattern:string[] = ["*.map"]) {
@@ -80,10 +82,19 @@ export class App {
             console.log("Parsing " + filePath)
         
             const ast = this.parser.parse(file)
-            const data = this.extractor.getClassMethods(ast)      
+            const data = this.extractor.getClassMethods(ast)
+
+            this.log(JSON.stringify(data, null, 2))
+
             results.push({filePath:filePath, data})
         });
     
         return results
+    }
+
+    private log(text){
+        if(this.isVerbose){
+            console.log(text)
+        }
     }
 }

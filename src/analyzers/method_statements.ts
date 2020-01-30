@@ -3,7 +3,7 @@ import traverser  from "eslint/lib/shared/traverser";
 import { Node, Program, ObjectExpression, Property } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 
-export function extractStatements(node: Node): Set<number>{
+export function extractStatements(node: Node): number[]{
     const result = new Set<number>();
 
     traverser.traverse(node, {
@@ -17,5 +17,6 @@ export function extractStatements(node: Node): Set<number>{
                         result.add(endLine)
                     })      
     }}})
-    return result
+
+    return Array.from(result)
 }

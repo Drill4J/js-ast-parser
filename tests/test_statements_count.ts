@@ -34,7 +34,7 @@ test('test can exract expression statements', t => {
     t.assert(data.methods.length === 1)
 
     const method = data.methods[0]
-    t.deepEqual(method.statements,new Set<number>([3, 4, 6, 8, 11, 13]))
+    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
 });
 
 test('test can exract expression statements from ', t => {
@@ -62,5 +62,5 @@ test('test can exract expression statements from ', t => {
     t.assert(data.methods.length === 1)
 
     const method = data.methods[0]
-    t.deepEqual(method.statements,new Set<number>([3, 4, 6, 8, 11, 13]))
+    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
 });

@@ -108,7 +108,6 @@ function extractMethodData(node: MainMethod) : Astmethod{
     method.params = extractMethodParams(node)
     method.body = deleteLocationData(node)
     
-    
     return method
 }
 
