@@ -11,33 +11,34 @@ program
   .option('-s, --sourceMaps', 'upload source maps')
   .option('-v, --verbose', 'verbose output')
   .parse(process.argv);
-  
-if(!program.config){
-  throw new Error('Config file should be provided as drill4js-cli -c <path>')
+
+if (!program.config) {
+  throw new Error('Config file should be provided as drill4js-cli -c <path>');
 }
 
-let config = JSON.parse(readFileSync(program.config).toString())
+let config = JSON.parse(readFileSync(program.config).toString());
 
-const app = new App(config,program.verbose)
+const app = new App(config, program.verbose);
 
-console.log(`-----\n Start parsing project ${config.projectName}\n-----`)
+console.log(`-----\n Start parsing project ${config.projectName}\n-----`);
 
-const files = getFiles(config.source_dir, config.ignoreFiles).filter(it => !config.ignoreFolders.some(x => it.includes(x)))
+const files = getFiles(config.source_dir, config.ignoreFiles).filter(
+  it => !config.ignoreFolders.some(x => it.includes(x))
+);
 
-const data = app.parseFiles(files)
+const data = app.parseFiles(files);
 
-console.log("Saving ast data...")
-saveData(config.url, data)
+console.log('Saving ast data...');
+saveData(config.url, data);
 
-if(program.sourceMaps){
-    console.log('-----\n Source files parsing anabled \n-----')
-    const data = app.findSourceMaps()
-    data.forEach(m => {
-      saveData(config.sourceMaps.url, m)
-    })
+if (program.sourceMaps) {
+  console.log('-----\n Source files parsing anabled \n-----');
+  const data = app.findSourceMaps();
+  data.forEach(m => {
+    saveData(config.sourceMaps.url, m);
+  });
 }
 
-
-if(program.generateConfig){
-  app.generateSampleConfig(program.generateConfig)
+if (program.generateConfig) {
+  app.generateSampleConfig(program.generateConfig);
 }

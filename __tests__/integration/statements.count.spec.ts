@@ -1,16 +1,11 @@
-import test from 'ava';
-import { AstParser } from 'src/parser';
-import { DataExtractor } from 'src/extractor';
-import traverser  from "eslint/lib/shared/traverser";
-import { isExpressionStatement } from 'typescript';
-import { Node, Program, ObjectExpression, Property } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import { AstParser } from "../../src/parser";
+import { DataExtractor } from "../../src/extractor";
 
 const parser = new AstParser()
 const extractor = new DataExtractor();
 
-test('test can exract expression statements', t => {
-
+describe('statements count', () => {
+  test('count statements for method definition', () => {
     const source = `class Test {
         newMethod(name: string){
             console.log(name)
@@ -31,13 +26,13 @@ test('test can exract expression statements', t => {
     const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 1)
+    expect(data.methods.length === 1)
 
     const method = data.methods[0]
-    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
-});
+    expect(method.statements).toEqual([3, 4, 6, 8, 11, 13])
+  });
 
-test('test can exract expression statements from ', t => {
+  test('count statements for static method', ()=>{
 
     const source = `class Test {
         static newMethod(name: string){
@@ -59,8 +54,9 @@ test('test can exract expression statements from ', t => {
     const ast = parser.parseSource(source)
     const data = extractor.getClassMethods(ast)
     
-    t.assert(data.methods.length === 1)
+    expect(data.methods.length === 1)
 
     const method = data.methods[0]
-    t.deepEqual(method.statements,[3, 4, 6, 8, 11, 13])
+    expect(method.statements).toEqual([3, 4, 6, 8, 11, 13])
+  })
 });
