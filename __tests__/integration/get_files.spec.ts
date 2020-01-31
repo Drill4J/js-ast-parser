@@ -6,7 +6,7 @@ test('test main app', () => {
     source_dir: './__tests__/data',
     url: '',
     ignoreFiles: ['*.js.map'],
-    ignoreFolders: [],
+    ignoreFolders: ['data/example'],
     sourceMaps: [],
   };
 
