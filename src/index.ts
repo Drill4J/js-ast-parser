@@ -13,11 +13,6 @@ program
   .option('-v, --version', 'cli version')
   .parse(process.argv);
 
-if (!program.version || program.version) {
-  console.log(`Current version ${pkg.version}`);
-  process.exit();
-}
-
 if (!program.config) {
   throw new Error('Config file should be provided as drill4js-cli -c <path>');
 }

@@ -6,7 +6,7 @@ test('test main app', () => {
     source_dir: './__tests__/data',
     url: '',
     ignoreFiles: ['*.js.map'],
-    ignoreFolders: [],
+    ignoreFolders: ['data/example'],
     sourceMaps: [],
   });
 
@@ -24,7 +24,7 @@ test('test source maps app', () => {
     source_dir: './__tests__/data',
     url: '',
     ignoreFiles: [],
-    ignoreFolders: [],
+    ignoreFolders: ['data/example'],
     sourceMaps: {
       pattern: ['./__tests__/data/*.js.map'],
     },
