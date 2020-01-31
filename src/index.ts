@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 import program from 'commander';
-import { parseFiles, writeFile, saveData, getFiles } from './utils';
 import { readFileSync } from 'fs-extra';
 import { App } from './app';
-import { version } from 'typescript';
+import * as pkg from '../package.json';
+import { saveData, getFiles } from './utils';
 
 program
   .option('-c, --config <path>', 'path to config.json file')
   .option('-g, --generate-config <path>', 'generate sample config')
   .option('-s, --sourceMaps', 'upload source maps')
-  .option('-v, --verbose', 'verbose output')
+  .option('-o, --verbose', 'verbose output')
+  .option('-v, --version', 'cli version')
   .parse(process.argv);
+
+if (!program.version || program.version) {
+  console.log(`Current version ${pkg.version}`);
+  process.exit();
+}
 
 if (!program.config) {
   throw new Error('Config file should be provided as drill4js-cli -c <path>');
