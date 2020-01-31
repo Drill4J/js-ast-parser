@@ -5,12 +5,16 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "tsc && ava"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^25.1.1",
     "ava": "^2.4.0",
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.1.0",
     "ts-node": "^8.5.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.2"
@@ -43,5 +47,28 @@
     "recursive-readdir": "^2.2.2",
     "recursive-readdir-synchronous": "0.0.4"
   },
-  "type": "module"
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json",
+        "diagnostics": false
+      }
+    },
+    "testMatch": [
+      "**/__tests__/integration/*.+(ts|tsx|js)"
+    ]
+  }
 }
