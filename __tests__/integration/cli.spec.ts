@@ -15,7 +15,7 @@ test('should parse source', async () => {
     '.'
   );
   expect(result.code).toEqual(0);
-  expect(result.stdout).toEqual(`-----
+  expect(result.stdout).toContain(`-----
  Start parsing project example
 -----
 Parsing /__tests__/data/example/js/Application.ts
