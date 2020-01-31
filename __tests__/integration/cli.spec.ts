@@ -7,6 +7,14 @@ test('Code should be 0', async () => {
   expect(result.stdout).toEqual('Current version 0.2.6\n');
 });
 
+test('should parse files', async () => {
+  let result = await cli(['-c'], '.');
+  expect(result.code).toEqual(1);
+  expect(result.stderr).toEqual(
+    "error: option '-c, --config <path>' argument missing\n"
+  );
+});
+
 function cli(args, cwd): Promise<any> {
   return new Promise(resolve => {
     exec(
