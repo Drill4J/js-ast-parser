@@ -31,7 +31,7 @@ export function saveData(url: string, data) {
         console.error(err);
       });
   } else {
-    console.log(`no url provided\n ${JSON.stringify(data, null, 2)}`);
+    console.log(`no url provided in config\n`);
   }
 }
 

@@ -15,7 +15,8 @@ test('should parse source', async () => {
     '.'
   );
   expect(result.code).toEqual(0);
-  expect(result.stdout).toContain(`-----\nStart parsing project example
+  expect(result.stdout).toEqual(`-----
+ Start parsing project example
 -----
 Parsing /__tests__/data/example/js/Application.ts
 Parsing /__tests__/data/example/js/_all.ts
@@ -26,9 +27,7 @@ Parsing /__tests__/data/example/js/directives/TodoFocus.ts
 Parsing /__tests__/data/example/js/models/TodoItem.ts
 Parsing /__tests__/data/example/js/services/TodoStorage.ts
 Saving ast data...
-Saving data to local disk function parseFiles(files) {
-}
-success!\n`);
+no url provided in config\n\n`);
 });
 
 function cli(args, cwd): Promise<any> {
