@@ -2,7 +2,7 @@
   "name": "drill4js-cli",
   "version": "0.2.6",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest"
