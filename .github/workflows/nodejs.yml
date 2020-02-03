@@ -24,3 +24,25 @@ jobs:
         npm test
       env:
         CI: true
+  
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, build, and test
+        run: |
+          docker run -dp 8080:8080 spirogov/agent-js 
+          docker ps
+          git clone https://github.com/SergeyPirogov/todomvc.git
+          cd todomvc/examples/typescript-angular
+          npm i drill4js-cli typescript@3.7.5
+          npx drill4js-cli -sc .drill4jrc
