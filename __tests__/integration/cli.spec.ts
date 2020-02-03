@@ -33,7 +33,7 @@ no url provided in config\n\n`);
 function cli(args, cwd): Promise<any> {
   return new Promise(resolve => {
     exec(
-      `node ${path.resolve('./dist/src/index')} ${args.join(' ')}`,
+      `node ${path.resolve('./dist/index')} ${args.join(' ')}`,
       { cwd },
       (error, stdout, stderr) => {
         resolve({

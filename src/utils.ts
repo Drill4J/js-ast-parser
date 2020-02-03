@@ -1,10 +1,6 @@
 import { writeJson } from 'fs-extra';
 import recursive from 'recursive-readdir-synchronous';
 import axios from 'axios';
-import { async } from 'rxjs/internal/scheduler/async';
-import { AstParser } from './parser';
-import { DataExtractor } from './extractor';
-import path from 'path';
 
 export function writeFile(name, object) {
   writeJson(name, object, { spaces: 2 }, err => {

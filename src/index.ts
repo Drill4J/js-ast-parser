@@ -2,7 +2,6 @@
 import program from 'commander';
 import { readFileSync } from 'fs-extra';
 import { App } from './app';
-import * as pkg from '../package.json';
 import { saveData, getFiles } from './utils';
 
 program
@@ -10,7 +9,6 @@ program
   .option('-g, --generate-config <path>', 'generate sample config')
   .option('-s, --sourceMaps', 'upload source maps')
   .option('-o, --verbose', 'verbose output')
-  .option('-v, --version', 'cli version')
   .parse(process.argv);
 
 if (!program.config) {
