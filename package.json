@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest --coverage"
+    "test": "jest -c integration.conf.json --coverage",
+    "e2e": "jest -c e2e.conf.json"
   },
   "author": "",
   "license": "ISC",
@@ -47,28 +48,5 @@
     "recursive-readdir": "^2.2.2",
     "recursive-readdir-synchronous": "0.0.4"
   },
-  "type": "module",
-  "jest": {
-    "testEnvironment": "node",
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json",
-        "diagnostics": false
-      }
-    },
-    "testMatch": [
-      "**/__tests__/integration/*.+(ts|tsx|js)"
-    ]
-  }
+  "type": "module"
 }
