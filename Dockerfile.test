@@ -1,0 +1,11 @@
+FROM node:12
+
+WORKDIR /usr/src/app
+
+RUN git clone https://github.com/SergeyPirogov/todomvc.git
+
+WORKDIR /usr/src/app/todomvc/examples/typescript-angular
+
+RUN npm i drill4js-cli typescript@3.7.5
+
+RUN npx drill4js-cli -sc .drill4jrc

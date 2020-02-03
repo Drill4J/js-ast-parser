@@ -1,8 +1,8 @@
 {
   "name": "drill4js-cli",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest --coverage"
@@ -33,7 +33,7 @@
   "files": [
     "dist/**/*"
   ],
-  "bin": "./dist/src/index.js",
+  "bin": "./dist/index.js",
   "dependencies": {
     "@ava/babel-plugin-throws-helper": "^4.0.0",
     "@typescript-eslint/parser": "^2.8.0",
