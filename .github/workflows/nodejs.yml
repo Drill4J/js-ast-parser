@@ -41,3 +41,6 @@ jobs:
       - name: npm install, build, and test
         run: |
           git clone https://github.com/SergeyPirogov/todomvc.git
+          cd todomvc/examples/typescript-angular
+          npm i drill4js-cli typescript@3.7.5
+          npx drill4js-cli -sc .drill4jrc
