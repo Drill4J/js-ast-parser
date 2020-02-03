@@ -40,6 +40,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install, build, and test
         run: |
+          docker run -p 8080:8080 spirogov/agent-js &
           git clone https://github.com/SergeyPirogov/todomvc.git
           cd todomvc/examples/typescript-angular
           npm i drill4js-cli typescript@3.7.5
