@@ -1,100 +1,76 @@
-import { Config } from "./model/config";
-import { writeFile, getFiles } from "./utils";
-import glob from 'fast-glob'
-import fs from 'fs-extra'
-import { AstParser } from "./parser";
-import { DataExtractor } from "./extractor";
-import path from 'path'
+import { Config } from './model/config';
+import { writeFile, getFiles } from './utils';
+import glob from 'fast-glob';
+import fs from 'fs-extra';
+import { AstParser } from './parser';
+import { DataExtractor } from './extractor';
+import path from 'path';
 
 export class App {
-  
-    private config: Config;
-    private parser: AstParser;
-    private extractor: DataExtractor;
-    private isVerbose;
+  private parser: AstParser;
+  private extractor: DataExtractor;
 
-    constructor(config: Config, isVerbose: any = false){
-        this.parser = new AstParser();
-        this.extractor = new DataExtractor();
-        this.config = config;
-        this.isVerbose = isVerbose;
-    }
+  constructor() {
+    this.parser = new AstParser();
+    this.extractor = new DataExtractor();
+  }
 
-    findSourceMaps(blobPattern:string[] = ["*.map"]) {
-        const pattern = this.config.sourceMaps? this.config.sourceMaps.pattern : blobPattern 
-    
-        console.log(`Searching source maps using pattern ${pattern}`)
-        const files = glob.sync(pattern)
-    
-        const data = [];
+  findSourceMaps(config: Config, blobPattern: string[] = ['*.map']) {
+    const pattern = config.sourceMaps ? config.sourceMaps.pattern : blobPattern;
 
-        files.forEach(f => {
-          console.log(`Reading source map file ${f}`)
-          data.push(JSON.parse(fs.readFileSync(f, 'utf8')));
-        })
+    console.log(`Searching source maps using pattern ${pattern}`);
+    const files = glob.sync(pattern);
 
-        return data;
-    }
+    const data = [];
 
-    generateSampleConfig(fileName: string){
-        const configSample = {
-            projectName: "demo",
-            source_dir: "./src",
-            url: "http://localhost:8081/saveAst",
-            ignoreFiles: [
-                "*.js.map",
-                "*.js",
-                "*.html",
-                "*.css",
-                "*.json"
-            ],
-            ignoreFolders: [
-                "libs",
-                "coverage",
-                "interfaces"
-            ],
-            sourceMaps: {
-              url: "http://localhost:3000/source-maps",
-              pattern: [
-                "./dist/main.*.js.map"
-              ]
-            }
-          }
-        
-          console.log(`Creating sample config file at ${fileName}`)
-          writeFile(fileName, configSample)
-    }
+    files.forEach(f => {
+      console.log(`Reading source map file ${f}`);
+      data.push(JSON.parse(fs.readFileSync(f, 'utf8')));
+    });
 
-    findSourceFiles(){
-        return getFiles(this.config.source_dir, this.config.ignoreFiles)
-        .filter(it => !this.config.ignoreFolders.some(x => it.includes(x)))
-    }
+    return data;
+  }
 
-    parseFiles(files: string[]): any {
-        let results = []
-        files.forEach(file => {
-            let filePath = file
-        
-            if(!path.isAbsolute(file)){
-                filePath = path.sep + file
-            }
+  generateSampleConfig(fileName: string) {
+    const configSample = {
+      projectName: 'demo',
+      source_dir: './src',
+      url: 'http://localhost:8081/saveAst',
+      ignoreFiles: ['*.js.map', '*.js', '*.html', '*.css', '*.json'],
+      ignoreFolders: ['libs', 'coverage', 'interfaces'],
+      sourceMaps: {
+        url: 'http://localhost:3000/source-maps',
+        pattern: ['./dist/main.*.js.map'],
+      },
+    };
 
-            console.log("Parsing " + filePath)
-        
-            const ast = this.parser.parse(file)
-            const data = this.extractor.getClassMethods(ast)
+    console.log(`Creating sample config file at ${fileName}`);
+    writeFile(fileName, configSample);
+  }
 
-            this.log(JSON.stringify(data, null, 2))
+  findSourceFiles(config: Config) {
+    return getFiles(config.source_dir, config.ignoreFiles).filter(
+      it => !config.ignoreFolders.some(x => it.includes(x))
+    );
+  }
 
-            results.push({filePath:filePath, data})
-        });
-    
-        return results
-    }
+  parseFiles(files: string[]): any {
+    let results = [];
+    files.forEach(file => {
+      let filePath = file;
 
-    private log(text){
-        if(this.isVerbose){
-            console.log(text)
-        }
-    }
+      if (!path.isAbsolute(file)) {
+        filePath = path.sep + file;
+      }
+
+      console.log('Parsing ' + filePath);
+
+      const { source, ast } = this.parser.parse(file);
+      const data = this.extractor.getClassMethods(ast);
+
+      results.push({ filePath: filePath, originalSource: source, data });
+    });
+
+    return results;
+  }
 }
