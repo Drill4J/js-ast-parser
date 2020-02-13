@@ -1,7 +1,9 @@
 import { App } from '../../src/app';
 
 test('test main app', () => {
-  const app = new App({
+  const app = new App();
+
+  const files = app.findSourceFiles({
     projectName: 'todomvc',
     source_dir: './__tests__/data',
     url: '',
@@ -10,8 +12,6 @@ test('test main app', () => {
     sourceMaps: [],
   });
 
-  const files = app.findSourceFiles();
-
   const result = app.parseFiles(files);
 
   expect(result.length).toBe(1);
@@ -19,7 +19,9 @@ test('test main app', () => {
 });
 
 test('test source maps app', () => {
-  const app = new App({
+  const app = new App();
+
+  const files = app.findSourceMaps({
     projectName: 'todomvc',
     source_dir: './__tests__/data',
     url: '',
@@ -30,31 +32,29 @@ test('test source maps app', () => {
     },
   });
 
-  const files = app.findSourceMaps();
-
   expect(files.length).toEqual(1);
 });
 
 test('test source maps app without pattern', () => {
-  const app = new App({
+  const app = new App();
+
+  const files = app.findSourceMaps({
     projectName: 'todomvc',
     source_dir: './__tests__/data',
     url: '',
   });
-
-  const files = app.findSourceMaps();
 
   expect(files.length).toBe(0);
 });
 
 test('test source maps from file', () => {
-  const app = new App({
+  const app = new App();
+
+  const files = app.findSourceMaps({
     projectName: 'todomvc',
     source_dir: './__tests__/data',
     url: '',
   });
-
-  const files = app.findSourceMaps();
 
   expect(files.length).toBe(0);
 });

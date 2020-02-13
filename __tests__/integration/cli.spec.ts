@@ -1,5 +1,5 @@
-let path = require('path');
-let exec = require('child_process').exec;
+import path from 'path';
+import { exec } from 'child_process';
 
 test('should parse files', async () => {
   let result = await cli(['-c'], '.');
@@ -28,6 +28,14 @@ Parsing /__tests__/data/example/js/models/TodoItem.ts
 Parsing /__tests__/data/example/js/services/TodoStorage.ts
 Saving ast data...
 no url provided in config\n\n`);
+});
+
+test('test can generate config', async () => {
+  let result = await cli(['-g', 'drill4j.config'], '.');
+  expect(result.code).toEqual(0);
+  expect(result.stdout).toEqual(
+    'Creating sample config file at drill4j.config\n'
+  );
 });
 
 function cli(args, cwd): Promise<any> {
