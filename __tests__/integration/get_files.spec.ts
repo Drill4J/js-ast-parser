@@ -10,9 +10,9 @@ test('test main app', () => {
     sourceMaps: [],
   };
 
-  const app = new App(conf, '');
+  const app = new App();
 
-  const files = app.findSourceFiles();
+  const files = app.findSourceFiles(conf);
 
   expect(files).toEqual(['__tests__/data/_example.ts']);
 });

@@ -1,6 +1,6 @@
 {
   "name": "drill4js-cli",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -47,6 +47,5 @@
     "fs-extra": "^8.1.0",
     "recursive-readdir": "^2.2.2",
     "recursive-readdir-synchronous": "0.0.4"
-  },
-  "type": "module"
+  }
 }

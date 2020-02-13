@@ -11,13 +11,18 @@ program
   .option('-o, --verbose', 'verbose output')
   .parse(process.argv);
 
+const app = new App();
+
+if (program.generateConfig) {
+  app.generateSampleConfig(program.generateConfig);
+  process.exit(0);
+}
+
 if (!program.config) {
   throw new Error('Config file should be provided as drill4js-cli -c <path>');
 }
 
-let config = JSON.parse(readFileSync(program.config).toString());
-
-const app = new App(config, program.verbose);
+const config = JSON.parse(readFileSync(program.config).toString());
 
 console.log(`-----\n Start parsing project ${config.projectName}\n-----`);
 
@@ -32,12 +37,8 @@ saveData(config.url, data);
 
 if (program.sourceMaps) {
   console.log('-----\n Source files parsing anabled \n-----');
-  const data = app.findSourceMaps();
+  const data = app.findSourceMaps(config);
   data.forEach(m => {
     saveData(config.sourceMaps.url, m);
   });
-}
-
-if (program.generateConfig) {
-  app.generateSampleConfig(program.generateConfig);
 }
