@@ -47,6 +47,5 @@
     "fs-extra": "^8.1.0",
     "recursive-readdir": "^2.2.2",
     "recursive-readdir-synchronous": "0.0.4"
-  },
-  "type": "module"
+  }
 }
