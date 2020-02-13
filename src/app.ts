@@ -65,10 +65,10 @@ export class App {
 
       console.log('Parsing ' + filePath);
 
-      const ast = this.parser.parse(file);
+      const { source, ast } = this.parser.parse(file);
       const data = this.extractor.getClassMethods(ast);
 
-      results.push({ filePath: filePath, data });
+      results.push({ filePath: filePath, originalSource: source, data });
     });
 
     return results;

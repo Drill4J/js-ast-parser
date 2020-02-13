@@ -99,14 +99,14 @@ describe('statements count', () => {
   });
 
   test('test can find all methods', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/episode.ts');
+    const { ast } = parser.parse('./__tests__/fixtures/original/episode.ts');
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toBe(17);
   });
 
   test('test can find arrow function', () => {
-    const ast = parser.parse(
+    const { ast } = parser.parse(
       './__tests__/fixtures/original/selectable-table.tsx'
     );
     const data = extractor.getClassMethods(ast);
@@ -141,21 +141,25 @@ describe('statements count', () => {
   });
 
   test('test can find only functions', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/single_bar.tsx');
+    const { ast } = parser.parse(
+      './__tests__/fixtures/original/single_bar.tsx'
+    );
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toBe(5);
   });
 
   test('test can find functions witf severalCall expr', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/side_bar.tsx');
+    const { ast } = parser.parse('./__tests__/fixtures/original/side_bar.tsx');
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toEqual(4);
   });
 
   test('test can find 2 function declarations', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/private_route.tsx');
+    const { ast } = parser.parse(
+      './__tests__/fixtures/original/private_route.tsx'
+    );
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toEqual(2);
@@ -178,7 +182,9 @@ describe('statements count', () => {
   });
 
   test('test can exract from wheels', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/wheel.effects.ts');
+    const { ast } = parser.parse(
+      './__tests__/fixtures/original/wheel.effects.ts'
+    );
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toBe(11);
@@ -188,14 +194,16 @@ describe('statements count', () => {
   });
 
   test('test can exract from locale', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/locale.ts');
+    const { ast } = parser.parse('./__tests__/fixtures/original/locale.ts');
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toBe(4);
   });
 
   test('test can exract from environment', () => {
-    const ast = parser.parse('./__tests__/fixtures/original/environment.ts');
+    const { ast } = parser.parse(
+      './__tests__/fixtures/original/environment.ts'
+    );
     const data = extractor.getClassMethods(ast);
 
     expect(data.methods.length).toBe(1);
