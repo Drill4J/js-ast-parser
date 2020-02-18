@@ -9,6 +9,7 @@ program
   .option('-g, --generate-config <path>', 'generate sample config')
   .option('-s, --sourceMaps', 'upload source maps')
   .option('-o, --verbose', 'verbose output')
+  .option('-b, --branch <name>', 'branch name', 'master')
   .parse(process.argv);
 
 const app = new App();
@@ -24,7 +25,8 @@ if (!program.config) {
 
 const config = JSON.parse(readFileSync(program.config).toString());
 
-console.log(`-----\n Start parsing project ${config.projectName}\n-----`);
+console.log(`-----\n Start parsing project ${config.projectName}\n`);
+console.log(` Branch: ${program.branch} \n-----`);
 
 const files = getFiles(config.source_dir, config.ignoreFiles).filter(
   it => !config.ignoreFolders.some(x => it.includes(x))
@@ -33,7 +35,13 @@ const files = getFiles(config.source_dir, config.ignoreFiles).filter(
 const data = app.parseFiles(files);
 
 console.log('Saving ast data...');
-saveData(config.url, data);
+
+const result = {
+  branch: program.branch,
+  data: data,
+};
+
+saveData(config.url, result);
 
 if (program.sourceMaps) {
   console.log('-----\n Source files parsing anabled \n-----');
