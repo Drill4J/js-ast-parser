@@ -8,6 +8,7 @@ export class AstParser {
     this.options = {
       comment: false,
       jsx: true,
+      loc: true,
     };
   }
 
