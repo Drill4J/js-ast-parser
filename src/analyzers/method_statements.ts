@@ -10,11 +10,13 @@ export function extractStatements(node: Node): number[]{
         enter(node: Node) {
             switch(node.type){
                 case AST_NODE_TYPES.BlockStatement:
-                    node.body.forEach(({ loc: { start: { line: startLine } = {}, end: { line: endLine } = {} } = {} }) => {
-                        result.add(startLine)
-                        result.add(endLine)
+                    node.body.forEach((statement) => {
+                        const startLine = statement?.loc?.start?.line;
+                        const endLine = statement?.loc?.end?.line;
+                        result.add(startLine);
+                        result.add(endLine);
                     })      
     }}})
 
     return Array.from(result)
-}
+}   
