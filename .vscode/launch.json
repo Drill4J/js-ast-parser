@@ -7,8 +7,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/dist/src/index.js"
+      "name": "Launch example parse",
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": ["-sc","__tests__/data/example/drill4j.config", "-b", "0.0.1"]
     },
     {
       "type": "node",

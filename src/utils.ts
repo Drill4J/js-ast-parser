@@ -1,6 +1,7 @@
 import { writeJson } from 'fs-extra';
 import recursive from 'recursive-readdir-synchronous';
 import axios from 'axios';
+import crypto from "crypto";
 
 export function writeFile(name, object) {
   writeJson(name, object, { spaces: 2 }, err => {
@@ -32,3 +33,14 @@ export function saveData(url: string, data) {
 }
 
 export function parseFiles(files) {}
+
+export function stringifyAndHash(object: any): string {
+    const fingerprint =
+        JSON.stringify(object)
+        
+    const hash = crypto
+        .createHash("sha256")
+        .update(fingerprint)
+        .digest("hex");
+    return hash;
+}
