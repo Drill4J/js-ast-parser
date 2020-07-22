@@ -1,5 +1,5 @@
 import { Config } from './model/config';
-import { writeFile, getFiles } from './utils';
+import { writeFile, getFiles, stringifyAndHash } from './utils';
 import glob from 'fast-glob';
 import fs from 'fs-extra';
 import { AstParser } from './parser';
@@ -66,11 +66,30 @@ export class App {
       console.log('Parsing ' + filePath);
 
       const { source, ast } = this.parser.parse(file);
+      const { source: _, ast: astWithoutLocationInfo } = this.parser.parse(file, false);
+      
       const data = this.extractor.getClassMethods(ast);
-
+      const withoutLocInfo = this.extractor.getClassMethods(astWithoutLocationInfo);
+      data.methods = addChecksums(data.methods, withoutLocInfo.methods);
       results.push({ filePath: filePath, originalSource: source, data });
     });
 
     return results;
   }
+}
+
+function addChecksums(methods, methodsWithoutLocInfo) {
+  if (!Array.isArray(methods)) {
+    throw new Error('methods expected to be an array');
+  }
+  if (!Array.isArray(methodsWithoutLocInfo)) {
+    throw new Error('methodsWithoutLocInfo expected to be an array');
+  }
+  if (methods.length != methodsWithoutLocInfo.length) {
+    throw new Error('methods with and without loc info count mismatch');
+  }
+  return methods.map((method, i) => ({
+    ...method,
+    checksum: stringifyAndHash(methodsWithoutLocInfo[i].body)
+  }))
 }

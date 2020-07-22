@@ -7,4 +7,5 @@ export class Astmethod {
     loc: SourceLocation;
     body: MainMethod;
     statements: number[];
+    checksum?: string;
 }

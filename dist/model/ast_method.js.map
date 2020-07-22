@@ -1,1 +1,1 @@
-{"version":3,"file":"ast_method.js","sourceRoot":"","sources":["../../src/model/ast_method.ts"],"names":[],"mappings":";;;AAGA,MAAa,SAAS;IAAtB;QAEI,WAAM,GAAa,EAAE,CAAC;IAI1B,CAAC;CAAA;AAND,8BAMC"}
+{"version":3,"file":"ast_method.js","sourceRoot":"","sources":["../../src/model/ast_method.ts"],"names":[],"mappings":";;AAGA,MAAa,SAAS;IAAtB;QAEI,WAAM,GAAa,EAAE,CAAC;IAK1B,CAAC;CAAA;AAPD,8BAOC"}

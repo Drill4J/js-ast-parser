@@ -12,12 +12,14 @@ export class AstParser {
     };
   }
 
-  public parse(sourcePath: string) {
+  public parse(sourcePath: string, includeLocationData: boolean = true) {
     const source = fs.readFileSync(sourcePath, 'utf8');
-    return { source: source, ast: this.parseSource(source) };
+    return { source: source, ast: this.parseSource(source, includeLocationData) };
   }
 
-  public parseSource(source: string) {
+  public parseSource(source: string, includeLocationData) {
+    this.options.loc = includeLocationData;
+    this.options.range = includeLocationData;
     return parse(source, this.options);
   }
 }
