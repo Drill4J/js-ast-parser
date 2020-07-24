@@ -1,0 +1,23 @@
+{
+    "projectName": "typescript-angular",
+    "source_dir": "sample/react-real-world/node_modules/react-redux-realworld-example-app/src",
+    "ignoreFiles": [
+        "*.js.map",
+        "*.html",
+        "*.css",
+        "*.ico",
+        "*.json",
+        "polyfills.ts"
+    ],
+    "ignoreFolders": [
+        "libs",
+        "coverage",
+        "interfaces",
+        "assets"
+    ],
+    "sourceMaps": {
+        "pattern":[
+            "sample/react-real-world/node_modules/react-redux-realworld-example-app/build/static/js/*.js.map"
+        ]
+    }
+}
