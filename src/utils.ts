@@ -15,21 +15,13 @@ export function getFiles(path: string, ignoreFiles: string[]) {
   return recursive(path, ignoreFiles);
 }
 
-export function saveData(url: string, data) {
-  if (url) {
-    axios
-      .post(url, data, {
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  } else {
-    console.log(`no url provided in config\n`);
+export async function saveData(url: string, data) {
+  if (!url) {
+    throw new Error('no url provided in config')
   }
+  return axios.post(url, data, {
+    headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+  })
 }
 
 export function parseFiles(files) {}

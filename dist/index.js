@@ -33,12 +33,13 @@ const result = {
     buildVersion: commander_1.default.buildVersion,
     data: data,
 };
-utils_1.saveData(config.url, result);
-if (commander_1.default.sourceMaps) {
-    console.log('-----\n Source files parsing anabled \n-----');
-    const data = app.findSourceMaps(config);
-    data.forEach(m => {
-        utils_1.saveData(config.sourceMaps.url, m);
-    });
-}
+utils_1.saveData(config.url, result).then(() => {
+    if (commander_1.default.sourceMaps) {
+        console.log('-----\n Source files parsing anabled \n-----');
+        const data = app.findSourceMaps(config);
+        data.forEach(m => {
+            utils_1.saveData(config.sourceMaps.url, m);
+        });
+    }
+});
 //# sourceMappingURL=index.js.map

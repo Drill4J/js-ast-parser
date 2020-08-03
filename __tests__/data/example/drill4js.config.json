@@ -1,7 +1,7 @@
 {
     "projectName": "example",
     "source_dir": "__tests__/data/example/js",
-    "url": "http://localhost:8080/agents/checksum-5/plugins/test2code/ast",
+    "url": "http://localhost:8080/agents/js-agent-demo/plugins/test2code/ast",
     "ignoreFiles": [
         "*.js.map",
         "*.js",
@@ -16,9 +16,9 @@
         "interfaces"
     ],
     "sourceMaps": {
-        "url": "http://localhost:8080/agents/checksum-4/plugins/test2code/source-maps",
+        "url": "http://localhost:8080/agents/js-agent-demo/plugins/test2code/source-maps",
         "pattern":[
-            "./js/*.js.map"
+            "__tests__/data/example/js/**/*.js.map"
         ]
     }
 }

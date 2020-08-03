@@ -41,12 +41,12 @@ const result = {
   data: data,
 };
 
-saveData(config.url, result);
-
-if (program.sourceMaps) {
-  console.log('-----\n Source files parsing anabled \n-----');
-  const data = app.findSourceMaps(config);
-  data.forEach(m => {
-    saveData(config.sourceMaps.url, m);
-  });
-}
+saveData(config.url, result).then(() => {
+  if (program.sourceMaps) {
+    console.log('-----\n Source files parsing anabled \n-----');
+    const data = app.findSourceMaps(config);
+    data.forEach(m => {
+      saveData(config.sourceMaps.url, m);
+    });
+  }
+});
