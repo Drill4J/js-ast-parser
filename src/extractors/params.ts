@@ -1,27 +1,7 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 
-export function extractMethodParams(method){
-    let params = [];
-    if(!method){
-        return []
-    }
-
-    if(method.type === AST_NODE_TYPES.MethodDefinition){
-        return extract(method.value.params)
-    }
-    else if(method.type === AST_NODE_TYPES.FunctionDeclaration || 
-        method.type === AST_NODE_TYPES.FunctionExpression || 
-        method.type === AST_NODE_TYPES.ArrowFunctionExpression){
-        return extract(method.params)
-    }
-    else if(method.type === AST_NODE_TYPES.CallExpression){
-        return extract(method.arguments)
-    }
-
-    return params;
-}
-
-function extract(params){
+// TODO refactor that
+export function extract(params){
     let result = [];
 
     params.forEach(p => {

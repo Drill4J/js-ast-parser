@@ -1,24 +1,32 @@
 {
-    "projectName": "example",
-    "source_dir": "__tests__/data/example/js",
-    "url": "http://localhost:8080/agents/js-agent-demo/plugins/test2code/ast",
-    "ignoreFiles": [
-        "*.js.map",
-        "*.js",
-        "*.html",
-        "*.css",
-        "*.ico",
-        "*.json"
+  "sources": {
+    "pattern": "__tests__/data/example/js/**",
+    "ignore": [
+      "**/*.js",
+      "**/*.js.map",
+      "**/*.html",
+      "**/*.css",
+      "**/*.ico",
+      "**/*.json",
+      "**/__tests__/data/example/js/libs/**",
+      "**/__tests__/data/example/js/coverage/**",
+      "**/__tests__/data/example/js/interfaces/**"
     ],
-    "ignoreFolders": [
-        "libs",
-        "coverage",
-        "interfaces"
-    ],
-    "sourceMaps": {
-        "url": "http://localhost:8080/agents/js-agent-demo/plugins/test2code/source-maps",
-        "pattern":[
-            "__tests__/data/example/js/**/*.js.map"
-        ]
+    "output": {
+      "url": "http://localhost:8080/agents/some-agent-1/plugins/test2code/ast",
+      "path": "./output/result.json",
+      "spaces": 2
     }
+  },
+  "sourcemaps": {
+    "pattern": "__tests__/data/example/js/**/*.js.map",
+    "ignore": [
+      "**/__tests__/data/example/js/libs/**",
+      "**/__tests__/data/example/js/coverage/**",
+      "**/__tests__/data/example/js/interfaces/**"
+    ],
+    "output": {
+      "url": "http://localhost:8080/agents/some-agent-1/plugins/test2code/source-maps"
+    }
+  }
 }

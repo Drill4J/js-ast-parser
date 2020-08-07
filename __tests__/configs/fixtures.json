@@ -1,0 +1,9 @@
+{
+  "sources": {
+    "pattern": "__tests__/fixtures/processor/**/nested-functions.ts",
+    "output": {
+      "path": "./output/result.json",
+      "spaces": 2
+    }
+  }
+}
