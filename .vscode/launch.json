@@ -7,16 +7,32 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch example parse",
-      "program": "${workspaceFolder}/dist/index.js",
-      "args": ["-sc","__tests__/data/example/drill4js.config.json", "-b", "0.0.1"]
+      "name": "Debug on fixtures",
+      "program": "${workspaceFolder}/dist/bin/index.js",
+      "args": ["-c","__tests__/configs/fixtures.json", "-b", "0.0.1"],
+      "env": {
+        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Example parse",
+      "program": "${workspaceFolder}/dist/bin/index.js",
+      "args": ["-c","__tests__/data/example/drill4js.config.json", "-b", "0.0.1"],
+      "env": {
+        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+      }
     },
     {
       "type": "node",
       "request": "launch",
       "name": "SAMPLE react-real-world",
-      "program": "${workspaceFolder}/dist/index.js",
-      "args": ["-sc","sample/react-real-world/.drill4jrc", "-b", "0.0.1"]
+      "program": "${workspaceFolder}/dist/bin/index.js",
+      "args": ["-c","sample/react-real-world/.drill4jrc", "-b", "0.0.1"],
+      "env": {
+        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+      }
     },
     {
       "type": "node",
@@ -24,6 +40,24 @@
       "name": "Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": ["${fileBasenameNoExtension}", "-c", "integration.conf.json"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Unit - Jest Current File",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "--runTestsByPath",
+        "${relativeFile}",
+        "-c",
+        "jest.unit.js"
+      ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,

@@ -2,5 +2,6 @@ node_modules/
 dist/
 demo/
 coverage/
+output/
 sample/*/package-lock.json
 *.log
