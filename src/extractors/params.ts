@@ -1,54 +1,39 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import Traverser from "eslint/lib/shared/traverser"; // TODO test on TS-specific keys
 
-// TODO refactor that
-export function extract(params){
-    let result = [];
+export function extract(paramsArray) {
+  const result = [];
+  paramsArray.forEach(p => {
+    Traverser.traverse(p, {
+      enter(node, parent) {
+        // identifier
+        //    with no parent is an ordinary param // e.g. function doStuff(a,b,c) { }
+        //    with parent-rest element is a rest param // e.g. function doStuff(a,b, ...c)
+        //    with parent-array pattern is a param from array element // e.g. function doStuff(a, [ b, c ])
+        //    with parent - ts parameter property is a typed param from constructor with accessibility modifier // e.g. class User { constructor(private name: string) }
+        if (node.type === AST_NODE_TYPES.Identifier &&
+          (!parent ||
+          parent.type === AST_NODE_TYPES.RestElement ||
+          parent.type === AST_NODE_TYPES.ArrayPattern ||
+          parent.type === AST_NODE_TYPES.TSParameterProperty)
+        ) {
+          result.push(node.name);
+          return;
+        }
 
-    params.forEach(p => {
-        if(p.type === AST_NODE_TYPES.Identifier){
-            result.push(p.name)
+        // params from object expression // e.g. function doStuff({ a, b: { c, d } }) {}
+        // expected params are ["a", "c", "d"]
+        // note that "b" is destructured and has descendants (thus property value !== key )
+        const isLeafProperty = node.type === AST_NODE_TYPES.Property &&
+          node.value.type === AST_NODE_TYPES.Identifier &&
+          node.key.type === AST_NODE_TYPES.Identifier &&
+          node.value.type.name === node.key.type.name
+        if (isLeafProperty) {
+          result.push(node.value.name);
+          return;
         }
-        else if(p.type === AST_NODE_TYPES.RestElement && p.argument.type === AST_NODE_TYPES.Identifier){
-            result.push(p.argument.name)
-        }
-        else if(p.type === AST_NODE_TYPES.SequenceExpression){
-            p.expressions.forEach(exp => {
-                if(exp.type === AST_NODE_TYPES.Identifier){
-                    result.push(exp.name)
-                }
-                else if (exp.type === AST_NODE_TYPES.ObjectExpression) {
-                    exp.properties.forEach(prop => {
-                        if(prop.type === AST_NODE_TYPES.Property){
-                            result.push(prop.key.name)
-                        }
-                    })
-                }
-            })
-        }
-        else if(p.type === AST_NODE_TYPES.ArrowFunctionExpression){
-            p.params.forEach(param => {
-                if(param.type === AST_NODE_TYPES.Identifier){
-                    result.push(param.name)
-                }
-                else if (param.type === AST_NODE_TYPES.ObjectPattern){
-                    const properties = []
-                    param.properties.forEach(prop => {
-                        if(prop.type === AST_NODE_TYPES.Property){
-                            properties.push(prop.key.name)
-                        }
-                    })
-                    result.push(`{ ${properties.join(", ")} }`)
-                }
-            })
-        }
-        else if(p.type === AST_NODE_TYPES.CallExpression){
-            result.push(...extract(p.arguments))
-        }
-        else if(p.type === AST_NODE_TYPES.AssignmentPattern){
-            result.push(p.left.name)
-        }
+      },
     })
-
-
-    return result
+  })
+  return result;
 }
