@@ -1,13 +1,9 @@
 {
   "sources": {
-    "pattern": "__tests__/data/example/js/**",
+    "pattern": [
+      "__tests__/data/example/js/**/*.ts"
+    ],
     "ignore": [
-      "**/*.js",
-      "**/*.js.map",
-      "**/*.html",
-      "**/*.css",
-      "**/*.ico",
-      "**/*.json",
       "**/__tests__/data/example/js/libs/**",
       "**/__tests__/data/example/js/coverage/**",
       "**/__tests__/data/example/js/interfaces/**"
@@ -19,7 +15,9 @@
     }
   },
   "sourcemaps": {
-    "pattern": "__tests__/data/example/js/**/*.js.map",
+    "pattern": [
+      "__tests__/data/example/js/**/*.js.map"
+    ],
     "ignore": [
       "**/__tests__/data/example/js/libs/**",
       "**/__tests__/data/example/js/coverage/**",
