@@ -24,7 +24,10 @@ export function findFilePaths(pattern, ignore) {
 
 const configSchema = joi.object({
   sources: joi.object({
-    pattern: joi.string().required(),
+    pattern: joi.alternatives(
+      joi.string().required(),
+      joi.array().items(joi.string().required()).min(1).required()
+    ).required(),
     ignore: joi.array().items(joi.string()),
     output: joi.alternatives(
       joi.object({
@@ -43,7 +46,10 @@ const configSchema = joi.object({
   }).required(),
   
   sourcemaps: joi.object({
-    pattern: joi.string().required(),
+    pattern: joi.alternatives(
+      joi.string().required(),
+      joi.array().items(joi.string().required()).min(1).required()
+    ).required(),
     ignore: joi.array().items(joi.string()),
     output: joi.object({
       url: joi.string().uri().required(),
