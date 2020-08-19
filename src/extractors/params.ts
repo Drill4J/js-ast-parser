@@ -1,7 +1,7 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import Traverser from "eslint/lib/shared/traverser"; // TODO test on TS-specific keys
 
-export function extract(paramsArray) {
+export default function(paramsArray) {
   const result = [];
   paramsArray.forEach(p => {
     Traverser.traverse(p, {
