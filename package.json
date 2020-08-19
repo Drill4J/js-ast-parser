@@ -1,6 +1,6 @@
 {
   "name": "drill4js-cli",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "",
   "main": "dist/bin/index.js",
   "scripts": {
