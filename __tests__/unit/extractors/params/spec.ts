@@ -1,6 +1,6 @@
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
 import { prepareCtx } from '../../handlers/helper';
-import { extract as specimen } from '../../../../src/extractors/params';
+import specimen from '../../../../src/extractors/params';
 
 describe('Param extractor', function () {
   test('must return ordinary params', () => {
@@ -11,72 +11,14 @@ describe('Param extractor', function () {
     const data = specimen(fixture.node.params);
 
     const expected = [
-      "a",
-      "b",
-      "c",
+      'a',
+      'b',
+      'c',
     ]
     expect(data).toMatchObject(expected);
   });
-
-  test('must return params from destructured object (ObjectPattern)', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff({ a, b }) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "b",
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return params from destructured object (ObjectPattern) - deep', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff({ c: { a, b } }) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "b",
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return params from destructured array (ArrayPattern)', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff([a, b]) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "b",
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return params from destructured array (ArrayPattern) - deep', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff([ [a, [c, d]], b]) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "c",
-      "d",
-      "b",
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return rest params from function params', () => {
+  
+  test('must return rest params from functions alongside other params', () => {
     const fixture: any = prepareCtx(`
       function doStuff( a, b, ...theArgs) {}
     `, AST_NODE_TYPES.FunctionDeclaration);
@@ -84,44 +26,14 @@ describe('Param extractor', function () {
     const data = specimen(fixture.node.params);
 
     const expected = [
-      "a",
-      "b",
-      "theArgs"
+      'a',
+      'b',
+      'theArgs'
     ]
     expect(data).toMatchObject(expected);
   });
 
-  test('must return rest params from array destructuring (ArrayPattern)', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff([ a, b, ...theArgs]) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "b",
-      "theArgs"
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return rest params from object destructuring (ObjectPattern)', () => {
-    const fixture: any = prepareCtx(`
-      function doStuff({ a, b, ...theArgs }) {}
-    `, AST_NODE_TYPES.FunctionDeclaration);
-
-    const data = specimen(fixture.node.params);
-
-    const expected = [
-      "a",
-      "b",
-      "theArgs"
-    ]
-    expect(data).toMatchObject(expected);
-  });
-
-  test('must return params from mixed situation (ordinary params, array pattern, object pattern, rest elements)', () => {
+  test('must return params from mixed situation (ordinary params, ArrayPattern, ObjectPattern, rest elements)', () => {
     const fixture: any = prepareCtx(`
       function doStuff(
         [
@@ -131,32 +43,32 @@ describe('Param extractor', function () {
               c: [
                 e,
                 f,
-                ...nestedArrayArgs
+                ...restArgFromNestedArray
               ],
               d,
-              ...theArgs
+              ...restArgFromNestedObject
             }
           ],
           b,
-          ...theArrayArgs
+          ...restArgFromArray
         ],
         g,
-        ...h) {}
+        ...restArgFromParams) {}
     `, AST_NODE_TYPES.FunctionDeclaration);
 
     const data = specimen(fixture.node.params);
 
     const expected = [
-      "a",
-      "e",
-      "f",
-      "nestedArrayArgs",
-      "d",
-      "theArgs",
-      "b",
-      "theArrayArgs",
-      "g",
-      "h"
+      'a',
+      'e',
+      'f',
+      'restArgFromNestedArray',
+      'd',
+      'restArgFromNestedObject',
+      'b',
+      'restArgFromArray',
+      'g',
+      'restArgFromParams'
     ]
     expect(data).toMatchObject(expected);
   });
@@ -176,14 +88,119 @@ describe('Param extractor', function () {
     const data = specimen(fixture.node.params);
 
     const expected = [
-      "nickname",
-      "name",
-      "age",
-      "isActive",
-      "isFlagged"
+      'nickname',
+      'name',
+      'age',
+      'isActive',
+      'isFlagged'
     ]
     expect(data).toMatchObject(expected);
   });
+
+  describe('from ObjectPattern (object destructuring)', function () {
+    test('must return properties', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff({ a, b }) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'b',
+      ]
+      expect(data).toMatchObject(expected);
+    });
+  
+    test('must return nested properties alongside others', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff({ c: { a, b } }) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'b',
+      ]
+      expect(data).toMatchObject(expected);
+    });
+    
+    test('must return rest params alongside others', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff({ a, b, ...theArgs }) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'b',
+        'theArgs'
+      ]
+      expect(data).toMatchObject(expected);
+    });
+      
+    test('must not return destructured param', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff({ c: { a, b } }) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      expect(data).not.toContainEqual('c')
+    });
+  })
+
+  describe('from ArrayPattern (array destructuring)', function () {
+
+    test('must return elements', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff([a, b]) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'b',
+      ]
+      expect(data).toMatchObject(expected);
+    });
+  
+    test('must return elements from nested arrays alongside others', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff([ [a, [c, [d, e]]], b]) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'c',
+        'd',
+        'e',
+        'b'
+      ]
+      expect(data).toMatchObject(expected);
+    });
+  
+    test('must return rest params alongside others', () => {
+      const fixture: any = prepareCtx(`
+        function doStuff([ a, b, ...theArgs]) {}
+      `, AST_NODE_TYPES.FunctionDeclaration);
+  
+      const data = specimen(fixture.node.params);
+  
+      const expected = [
+        'a',
+        'b',
+        'theArgs'
+      ]
+      expect(data).toMatchObject(expected);
+    });
+  })
+
 })
 
 export default {};
