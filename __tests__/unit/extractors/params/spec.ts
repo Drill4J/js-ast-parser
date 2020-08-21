@@ -1,5 +1,5 @@
 import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
-import { prepareCtx } from '../../handlers/helper';
+import { prepareCtx } from '../../helper';
 import specimen from '../../../../src/extractors/params';
 
 describe('Param extractor', function () {
