@@ -1,6 +1,6 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import specimen from '../../../../src/handlers/arrow-function-expression';
-import { prepareCtx } from '../helper';
+import { prepareCtx } from '../../helper';
 
 describe('Arrow function expression handler', function () {
   

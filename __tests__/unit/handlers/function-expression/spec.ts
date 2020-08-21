@@ -1,6 +1,6 @@
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import specimen from '../../../../src/handlers/function-expression';
-import { prepareCtx } from '../helper';
+import { prepareCtx } from '../../helper';
 
 describe('Function expression handler', function () {
   test('for named function must return result with name with name ending with function name', () => {
