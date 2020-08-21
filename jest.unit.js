@@ -6,4 +6,10 @@ module.exports = {
   },
   testMatch: ["**/__tests__/unit/**/spec.+(ts|tsx|js)"],
   moduleFileExtensions: ['ts', 'js'],
+  setupFilesAfterEnv: ["jest-extended"],
+  globals: {
+    "ts-jest": {
+      tsConfig: './test.tsconfig.json'
+    }
+  }
 }
