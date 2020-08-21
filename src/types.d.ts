@@ -5,12 +5,19 @@ export interface FunctionNode {
   parent: FunctionNode,
 }
 
+interface NodeInfo {
+  name?: string,
+  isAnonymous?: boolean,
+  probes?: Array<number>,
+  params?: Array<string>,
+  checksum?: string,
+  removedProbes?: Array<number>,
+}
+
 export interface NodeContext {
   node: Node,
-  result: Record<string, unknown>,
-  flags: {
-    [key: string]: boolean
-  },
+  result: NodeInfo,
+  flags: Record<string,boolean>,
   traverserContext: {
     current: () => Node,
     parents: () => Node[],

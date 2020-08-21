@@ -61,15 +61,15 @@ export function processBranch(branch) {
       if (ctx.flags.handleAsSeparateTree) {
         const tree: UnprocessedTree = {
           ast: ctx.node,
-          name: (ctx.result.name as string),
+          name: ctx.result.name,
         };
         innerTrees.push(tree);
         return;
       }
 
       if (isEmpty(ctx.result)) return; // TODO warning
-      
-      if (!ctx.result.anonymous) {
+
+      if (!ctx.result.isAnonymous) {
         functions.push(ctx.result);
       }
 
@@ -92,18 +92,34 @@ export function processBranch(branch) {
     leave(node) {
       if (!functionNode) return;
       
+      // TODO refactor
       const isLeavingFunctionNode = node === functionNode.ctx.node;
       if (isLeavingFunctionNode) {
         if (functionNode.parent) {
-          // remove function probes from parent function probes, if function has a name
-          if (!functionNode.ctx.result.anonymous) {
-            functionNode.parent.ctx.result.probes = (functionNode.parent.ctx.result.probes as Array<number>)
-              .filter(x => !(functionNode.ctx.result.probes as Array<number>).includes(x));
+          const parent = functionNode.parent.ctx.result;
+          const child = functionNode.ctx.result;
+          const { probes, removedProbes } = splitProbes(parent, child)
+          parent.probes = probes;
+          if (removedProbes && !Array.isArray(parent.removedProbes)) {
+            parent.removedProbes = [];
           }
+          parent.removedProbes = (parent.removedProbes as Array<number>).concat(removedProbes);
         }
         functionNode = functionNode.parent;
       }
     }
   })
   return { functions, innerTrees };
+}
+
+function splitProbes(parent, child) {
+  const probesToRemove = (parent.probes as Array<number>)
+    .filter(probe =>
+      !child.isAnonymous && (child.probes as Array<number>).includes(probe) ||
+      child.removedProbes && (child.removedProbes as Array<number>).includes(probe));
+  const probes = (parent.probes as Array<number>).filter(probe => !probesToRemove.includes(probe))
+  return {
+    probes,
+    removedProbes: probesToRemove
+  }
 }
