@@ -11,7 +11,7 @@ export default function (ctx: NodeContext) {
   const checksum = extractChecksum(ctx);
   ctx.result = {
     name: name ? name : `anonymous${checksum}`,
-    anonymous: !name,
+    isAnonymous: !name,
     probes: extractProbes(ctx),
     params: extractParams((node as any).params),
     checksum,
