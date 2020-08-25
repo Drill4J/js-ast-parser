@@ -4,6 +4,19 @@ import specimen from '../../../../src/extractors/parent-name-chain';
 
 describe('Parent name chain extractor', function () {
 
+  test('from export default declaration must return name prefixed with default', () => {
+      const fixture: any = prepareCtx(
+      `export default {
+        a() {
+            console.log('123')
+        },
+      }`, AST_NODE_TYPES.FunctionExpression);
+    
+      const data = specimen(fixture);
+    
+      expect(data).toEqual(expect.stringMatching('^default.*'));
+    })
+
   describe('from method', () => {
     test('must return name matching method name', () => {
       const fixture: any = prepareCtx(`

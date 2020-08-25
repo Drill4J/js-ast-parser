@@ -1,27 +1,35 @@
-import { FunctionExpression, Identifier } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { Identifier } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
 import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { NodeContext } from '../../types';
-import extractNameFromObjectProperty from './name-from-object-property';
 import extractNameFromAssignmentExpression from './name-from-assignment-expression';
 
 export default function (ctx: NodeContext) {
-  const parent = ctx.traverserContext.parents().pop();
+  const parents = ctx.traverserContext.parents();
+  const names = [];
 
-  // EXAMPLE: class { someMethod() { ... } }
-  if (parent.type === AST_NODE_TYPES.MethodDefinition) {
-    return (parent.key as Identifier).name;
+  for (const parent of parents) {
+    switch (parent.type) {
+      case AST_NODE_TYPES.MethodDefinition:
+        names.push((parent.key as Identifier).name);
+        break;
+
+      case AST_NODE_TYPES.ExportDefaultDeclaration:
+        names.push('default');
+        break;
+
+      case AST_NODE_TYPES.Property:
+        names.push((parent.key as Identifier).name);
+        break;
+
+      case AST_NODE_TYPES.AssignmentExpression:
+        names.push(extractNameFromAssignmentExpression(parent));
+        break;
+
+      case AST_NODE_TYPES.VariableDeclarator:
+        names.push((parent as any).id.name);
+        break;
+    }
   }
 
-  if (parent.type === AST_NODE_TYPES.Property) {
-    return extractNameFromObjectProperty(ctx);
-  }
-
-  if (parent.type === AST_NODE_TYPES.AssignmentExpression) {
-    return extractNameFromAssignmentExpression(ctx);
-  }
-
-  // EXAMPLE: const a = function () { console.log(1) }
-  if (parent.type === AST_NODE_TYPES.VariableDeclarator) {
-    return (parent as any).id.name // (parent as any).id.type === AST_NODE_TYPES.Identifier
-  }
+  return names.join('.')
 }
