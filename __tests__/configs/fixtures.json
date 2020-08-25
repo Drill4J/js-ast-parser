@@ -1,6 +1,6 @@
 {
   "sources": {
-    "pattern": "__tests__/fixtures/processor/**/nested-functions.ts",
+    "pattern": "__tests__/fixtures/processor/**/function-overloading.ts",
     "output": {
       "path": "./output/result.json",
       "spaces": 2

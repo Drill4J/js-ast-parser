@@ -1,9 +1,8 @@
+import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import Traverser from "eslint/lib/shared/traverser"; // TODO test on TS-specific keys
-import isEmpty from 'lodash.isempty';
-import parser from './parser';
 import * as handlers from './handlers';
-
-import { NodeContext, FunctionNode, Queue, Subtree } from './types';
+import parser from './parser';
+import { FunctionNode, NodeContext, Queue, Subtree } from './types';
 
 export default function processSource(source) {
   const ast = parser(source);
@@ -45,6 +44,9 @@ export function processSubtree(subtree) {
       const isRoot = !parent;
       if (isRoot) return;
 
+      // ignore both callbacks and IIFEs
+      if (parent.type === AST_NODE_TYPES.CallExpression) return;
+
       //convert PascalCased node type to camelCased handler name
       const handlerName = node.type[0].toLowerCase() + node.type.substring(1, node.type.length);
       const handler = handlers[handlerName];
@@ -57,7 +59,7 @@ export function processSubtree(subtree) {
         traverserContext: this
       };
       handler(ctx);
-
+      
       if (ctx.flags.handleAsSeparateTree) {
         subtrees.push({
           ast: ctx.node,
@@ -66,11 +68,7 @@ export function processSubtree(subtree) {
         return;
       }
 
-      if (isEmpty(ctx.result)) return; // TODO warning
-
-      if (!ctx.result.isAnonymous) {
-        functions.push(ctx.result);
-      }
+      functions.push(ctx.result);
 
       const isFirst = !functionNode;
       if (isFirst) {

@@ -1,25 +1,15 @@
-import { NodeContext } from '../types';
 import { ClassExpression } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
-import extractParentNameChain from '../extractors/parent-name-chain';
+import extractName from '../extractors/name';
+import { NodeContext } from '../types';
 
 export default function (ctx: NodeContext) {
+  const name =
+    (ctx.node as ClassExpression).id && (ctx.node as ClassExpression).id.name ||
+    extractName(ctx.traverserContext.parents().pop());
   ctx.result = {
-    name: getName(ctx)
+    name
   }
   ctx.flags.handleAsSeparateTree = true;
   ctx.traverserContext.skip();
   return ctx;
-}
-
-function getName(ctx: NodeContext) {
-  let result = '';
-  const name = (ctx.node as ClassExpression).id && (ctx.node as ClassExpression).id.name
-  const parentName = extractParentNameChain(ctx)
-  if (parentName) {
-    result += parentName
-  }
-  if (name) {
-    result += '.' + name
-  }
-  return result;
 }

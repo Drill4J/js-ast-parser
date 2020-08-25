@@ -1,7 +1,7 @@
-import { parse } from '@typescript-eslint/typescript-estree';
+import { AST_NODE_TYPES, parse } from '@typescript-eslint/typescript-estree';
 import Traverser from "eslint/lib/shared/traverser";
 
-export function prepareCtx(source, targetNodeType) {
+export function prepareCtx(source, targetNodeType: AST_NODE_TYPES, targetLine?: number) {
   const options = {
     comment: false,
     jsx: true,
@@ -20,7 +20,7 @@ export function prepareCtx(source, targetNodeType) {
   Traverser.traverse(ast, {
     enter(node, parent) {
       if (node.type === targetNodeType) {
-
+        if (targetLine && node.loc?.start?.line !== targetLine) return;
         const parents = this.parents();
         ctx.node = node;
         ctx.traverserContext = {
