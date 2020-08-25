@@ -23,22 +23,16 @@ describe('Class expression handler', function () {
 
     const expected = {
       result: {
-        name: expect.stringMatching('\.User$')
+        name: expect.stringMatching('User'),
       }
     }
     expect(data).toMatchObject(expected);
   });
 
-  test('for anonymous expression must return result with non-empty name', () => {
+  test('for anonymous class must return result with name matching variable identifier class is assigned to', () => {
     const fixture: any = prepareCtx(`
-      const some = {
-        deep: {
-          nested: {
-          }
-        }
-      }
-      
-      some.deep.nested = class {
+      let User
+      User = class {
         constructor() { }
         doStuff() { }
       }
@@ -48,7 +42,7 @@ describe('Class expression handler', function () {
 
     const expected = {
       result: {
-        name: expect.stringMatching('.+')
+        name: expect.stringMatching('User')
       }
     }
     expect(data).toMatchObject(expected);

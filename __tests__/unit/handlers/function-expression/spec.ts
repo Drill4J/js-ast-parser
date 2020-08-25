@@ -19,7 +19,7 @@ describe('Function expression handler', function () {
 
     const expected = {
       result: {
-        name: expect.stringMatching('\.doStuff$')
+        name: expect.stringMatching('.*doStuff$')
       }
     }
     expect(data).toMatchObject(expected);

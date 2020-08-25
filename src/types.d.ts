@@ -7,6 +7,7 @@ export interface FunctionNode {
 
 interface NodeInfo {
   name?: string,
+  parentNameChain?: string,
   isAnonymous?: boolean,
   probes?: Array<number>,
   params?: Array<string>,

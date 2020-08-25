@@ -2,9 +2,9 @@ import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { prepareCtx } from '../../helper';
 import specimen from '../../../../src/handlers/function-declaration';
 
-describe('Function declaration', function () {
+describe('Function declaration handler', function () {
 
-  test('name must match function name', () => {
+  test('must return result with name matching function identifier', () => {
     const fixture: any = prepareCtx(`
       function doStuff() {}
     `, AST_NODE_TYPES.FunctionDeclaration);
