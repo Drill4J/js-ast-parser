@@ -3,7 +3,7 @@ import isEmpty from 'lodash.isempty';
 import parser from './parser';
 import * as handlers from './handlers';
 
-import { NodeContext, FunctionNode, Queue, UnprocessedTree } from './types';
+import { NodeContext, FunctionNode, Queue, Subtree } from './types';
 
 export default function processSource(source) {
   const ast = parser(source);
@@ -12,10 +12,12 @@ export default function processSource(source) {
 
 function processTree (ast) {
   const results = [];
-  const queue: Queue = [{ ast }];
+  
+  const subtree: Subtree = { ast, name: null };
+  const queue: Queue = [ subtree ];
 
   while (queue.length > 0) {
-    const processed = processBranch(queue[0].ast);
+    const processed = processSubtree(queue[0].ast);
 
     if (processed.functions.length > 0) {
       results.push({
@@ -26,44 +28,41 @@ function processTree (ast) {
 
     queue.shift();
 
-    if (processed.innerTrees.length > 0) {
-      queue.unshift(...processed.innerTrees);
+    if (processed.subtrees.length > 0) {
+      queue.unshift(...processed.subtrees);
     }
   }
   return results;
 }
 
-export function processBranch(branch) {
+export function processSubtree(subtree) {
   const functions = [];
-  const innerTrees = [];
-  
+  const subtrees = [];
   let functionNode: FunctionNode = null;
-
-  Traverser.traverse(branch, {
+  
+  Traverser.traverse(subtree, {
     enter(node, parent) {
       const isRoot = !parent;
       if (isRoot) return;
-
-      const ctx: NodeContext = {
-        node,
-        result: {},
-        flags: {},
-        traverserContext: this
-      }
 
       //convert PascalCased node type to camelCased handler name
       const handlerName = node.type[0].toLowerCase() + node.type.substring(1, node.type.length);
       const handler = handlers[handlerName];
       if (!handler) return;
 
+      const ctx: NodeContext = {
+        node,
+        result: {},
+        flags: {},
+        traverserContext: this
+      };
       handler(ctx);
 
       if (ctx.flags.handleAsSeparateTree) {
-        const tree: UnprocessedTree = {
+        subtrees.push({
           ast: ctx.node,
           name: ctx.result.name,
-        };
-        innerTrees.push(tree);
+        });
         return;
       }
 
@@ -73,53 +72,49 @@ export function processBranch(branch) {
         functions.push(ctx.result);
       }
 
-      if (!functionNode) {
+      const isFirst = !functionNode;
+      if (isFirst) {
         functionNode = {
           ctx,
           parent: null,
-        }
-      } else {
-        const isChildNode = ctx.traverserContext.parents().includes(functionNode.ctx.node);
-        if (!isChildNode) return; // TODO warning // TODO never suppose to happen, since functionNode is always created beforehand and the parent pointer is moved when a traverser is leaving the node
-
-        const newFunctionNode = {
-          ctx,
-          parent: functionNode,
         };
-        functionNode = newFunctionNode;
+        return;
       }
+      
+      const isChildNode = ctx.traverserContext.parents().includes(functionNode.ctx.node);
+      if (!isChildNode) return; // TODO warning // TODO never suppose to happen, since functionNode is always created beforehand and the parent pointer is moved when a traverser is leaving the node
+
+      functionNode = {
+        ctx,
+        parent: functionNode,
+      };
     },
     leave(node) {
       if (!functionNode) return;
       
-      // TODO refactor
-      const isLeavingFunctionNode = node === functionNode.ctx.node;
-      if (isLeavingFunctionNode) {
+      //  TODO abstract leave hooks ?
+      //  TODO is it shared state mutation?
+      const isLeavingTrackedNode = node === functionNode.ctx.node;
+      if (isLeavingTrackedNode) {
         if (functionNode.parent) {
           const parent = functionNode.parent.ctx.result;
           const child = functionNode.ctx.result;
-          const { probes, removedProbes } = splitProbes(parent, child)
-          parent.probes = probes;
-          if (removedProbes && !Array.isArray(parent.removedProbes)) {
+          
+          const probesToRemove = parent.probes.filter(probe =>
+            !child.isAnonymous && child.probes.includes(probe) ||
+            child.removedProbes && child.removedProbes.includes(probe));
+
+          if (probesToRemove && !Array.isArray(parent.removedProbes)) {
             parent.removedProbes = [];
           }
-          parent.removedProbes = (parent.removedProbes as Array<number>).concat(removedProbes);
+
+          parent.probes = parent.probes.filter(probe => !probesToRemove.includes(probe))
+          parent.removedProbes = parent.removedProbes.concat(probesToRemove);
         }
         functionNode = functionNode.parent;
       }
     }
   })
-  return { functions, innerTrees };
-}
 
-function splitProbes(parent, child) {
-  const probesToRemove = (parent.probes as Array<number>)
-    .filter(probe =>
-      !child.isAnonymous && (child.probes as Array<number>).includes(probe) ||
-      child.removedProbes && (child.removedProbes as Array<number>).includes(probe));
-  const probes = (parent.probes as Array<number>).filter(probe => !probesToRemove.includes(probe))
-  return {
-    probes,
-    removedProbes: probesToRemove
-  }
+  return { functions, subtrees };
 }

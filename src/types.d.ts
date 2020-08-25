@@ -26,9 +26,9 @@ export interface NodeContext {
   }
 }
 
-export interface UnprocessedTree {
+export interface Subtree {
   ast: Node,
   name?: string,
 }
 
-export type Queue = UnprocessedTree[]
+export type Queue = Subtree[]
