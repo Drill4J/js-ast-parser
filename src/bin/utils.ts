@@ -1,13 +1,7 @@
-import axios from 'axios';
 import glob from 'fast-glob';
 import fsExtra from 'fs-extra';
 import joi from 'joi';
-
-export async function send(url: string, data: unknown) {
-  return await axios.post(url, data, {
-    headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-  })
-}
+import crypto from 'crypto';
 
 export function findFilePaths(pattern, ignore) {
   const result = glob.sync(pattern, {
@@ -22,6 +16,13 @@ export function findFilePaths(pattern, ignore) {
   return result;
 }
 
+export function getHash(data) {
+  return crypto
+    .createHash("sha256")
+    .update(data)
+    .digest("hex");
+}
+
 const configSchema = joi.object({
   sources: joi.object({
     pattern: joi.alternatives(
@@ -29,35 +30,46 @@ const configSchema = joi.object({
       joi.array().items(joi.string().required()).min(1).required()
     ).required(),
     ignore: joi.array().items(joi.string()),
-    output: joi.alternatives(
-      joi.object({
-        url: joi.string().uri().required(),
-        path: joi.string().required(),
-        spaces: joi.alternatives(joi.string(), joi.number())
-      }),
-      joi.object({
-        url: joi.string().uri().required(),
-      }),
-      joi.object({
-        path: joi.string().required(),
-        spaces: joi.alternatives(joi.string(), joi.number())
-      }),
-    )
   }).required(),
   
+  bundle: joi.object({
+    pattern: joi.alternatives(
+      joi.string().required(),
+      joi.array().items(joi.string().required()).min(1).required()
+    ).required(),
+    ignore: joi.array().items(joi.string()),
+  }).required(),
+
   sourcemaps: joi.object({
     pattern: joi.alternatives(
       joi.string().required(),
       joi.array().items(joi.string().required()).min(1).required()
     ).required(),
     ignore: joi.array().items(joi.string()),
-    output: joi.object({
-      url: joi.string().uri().required(),
-    }).required()
   }),
+
+  output: joi.alternatives(
+    joi.object({
+      agentId: joi.string().required(),
+      agentApiUrl: joi.string().uri().required(),
+      path: joi.string().required(),
+      spaces: joi.alternatives(joi.string(), joi.number()),
+    }),
+    joi.object({
+      agentId: joi.string().required(),
+      agentApiUrl: joi.string().uri().required(),
+    }),
+    joi.object({
+      path: joi.string().required(),
+      spaces: joi.alternatives(joi.string(), joi.number())
+    }),
+  ).required()
 }).options({ stripUnknown: true })
 
 export function getConfig(path): Record<string,any> {
+  if (!path) {
+    throw new Error('path to config file is required (use -c or --config)');
+  }
   let rawConfig
   try {
     rawConfig = fsExtra.readJsonSync(path);

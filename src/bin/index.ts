@@ -1,21 +1,15 @@
 #!/usr/bin/env node
+import axios from 'axios';
 import program from 'commander';
 import fsExtra from 'fs-extra';
+import processSource from '../index';
 import {
   findFilePaths,
   getConfig,
-  send,
+  getHash
 } from './utils';
-import processSource from '../index';
 
-process.on('uncaughtException', (error) => {
-  if (error instanceof Error) {
-    console.log('Error:', error.message, '\n', error.stack);
-  } else {
-    console.log('Error:', JSON.stringify(error));
-  }
-  process.exit(1);
-})
+process.on('uncaughtException', exceptionHandler)
 
 program
   .option('-c, --config <path>', 'path to config file')
@@ -25,64 +19,103 @@ program
 
 console.log('Program started\n');
 
-if (!program.config) {
-  throw new Error('path to config file is required (use -c or --config)');
-}
-
-console.log('Searching sources');
 const config = getConfig(program.config);
-const sourcePaths = findFilePaths(config.sources.pattern, config.sources.ignore);
-console.log('Found sources:\n\t', sourcePaths.join('\n\t'), '\n')
+const bundleHashes = findBundleHashes(config.bundle);
+const sourcemaps = findSourcemaps(config.sourcemaps);
+const sourcePaths = findSourcePaths(config.sources);
+const processedSources = processSources(sourcePaths);
 
-console.log('Processing sources');
-const result = [];
-sourcePaths.forEach(filePath => {
-  try {
-    console.log('\t', filePath);
-    const source = fsExtra.readFileSync(filePath, 'utf8');
-    const data = processSource(source);
-    data.forEach(x => result.push({
-      filePath,
-      suffix: x.name,
-      methods: x.functions,
-    }));
-  } catch(e) {
-    console.log('\t failed to parse', filePath, 'due to\n', JSON.stringify(e), '\n')
-    if (!program.skipErrors) {
-      throw e;
-    }
+sendResults(config.output, {
+  version: program.buildVersion,
+  data: {
+    bundleHashes,
+    data: processedSources,
+    sourcemaps
   }
 });
-console.log('Sources processed\n')
 
-console.log('Searching sourcemaps')
-let sourcemaps
-if (config.sourcemaps) {
-  const sourcemapPaths = findFilePaths(config.sourcemaps.pattern, config.sourcemaps.ignore);
-  console.log('Sourcemaps found:\n\t', sourcemapPaths.join('\n\t'), '\n')
-  sourcemaps = sourcemapPaths.map(x => fsExtra.readJSONSync(x, { encoding: 'utf-8' }));
+function processSources(paths) {
+  console.log('Processing sources');
+  const result = [];
+  paths.forEach(path => {
+    try {
+      console.log('\t', path);
+      const source = fsExtra.readFileSync(path, 'utf8');
+      const processedSource = processSource(source);
+      processedSource.forEach(x => result.push({
+        path,
+        suffix: x.name,
+        methods: x.functions,
+      }));
+    }
+    catch (e) {
+      console.log('\t failed to parse', path, 'due to\n', JSON.stringify(e), '\n');
+      if (!program.skipErrors) {
+        throw e;
+      }
+    }
+  });
+  console.log('Sources processed\n');
+  return result;
 }
 
-(async () => {  
-  const { url, path, spaces } = config.sources.output
+function findBundleHashes({ pattern, ignore }) {
+  console.log('Searching bundle files');
+  const paths = findFilePaths(pattern, ignore);
+  if (paths.length === 0) {
+    throw new Error('could not find bundle files');
+  }
+  console.log('Bundle files found:\n\t', paths.join('\n\t'), '\n');
 
+  const result = paths.map(path => {
+    const bundleFile = fsExtra.readFileSync(path, 'utf8');
+    const hash = getHash(bundleFile.replace(/\r\n/g, '\n'));
+    return {
+      file: path,
+      hash
+    };
+  });
+  return result;
+}
+
+function findSourcemaps({ pattern, ignore }) {
+  console.log('Searching sourcemaps');
+  const paths = findFilePaths(pattern, ignore);
+  if (paths.length === 0) throw new Error('could not find sourcemaps');
+  console.log('Sourcemaps found:\n\t', paths.join('\n\t'), '\n');
+  const result = paths.map(x => fsExtra.readJSONSync(x, { encoding: 'utf-8' }));
+  return result;
+}
+
+function findSourcePaths({ pattern, ignore }) {
+  console.log('Searching sources');
+  const result = findFilePaths(pattern, ignore);
+  if (result.length === 0) throw new Error('could not find source files');
+  console.log('Found sources:\n\t', result.join('\n\t'), '\n');
+  return result;
+}
+
+async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
   if (path) {
-    console.log('Write AST data to', path, '\n')
-    await fsExtra.writeJSON(path, result, { spaces });
+    console.log('Write AST data to', path, '\n');
+    await fsExtra.writeJSON(path, buildInfo.data, { spaces: 2 });
   }
 
-  if (url) {
-    console.log('Send AST to', url, '\n')
-    await send(url, {
-      buildVersion: program.buildVersion,
-      data: result,
-    });
+  if (agentApiUrl) {
+    console.log('Send results to', agentApiUrl, '\n');
+    await axios.post(`${agentApiUrl}/agents/${agentId}/plugins/test2code/build`, buildInfo, {
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+    })
   }
-
-  if (config.sourcemaps) {
-    console.log('Send sourcemaps to', config.sourcemaps.output.url, '\n')
-    await Promise.all(sourcemaps.map(sourcemap => send(config.sourcemaps.output.url, sourcemap)));
-  }
-
   console.log('Program finished. Exiting...');
-})()
+}
+
+function exceptionHandler(error: unknown) {
+  if (error instanceof Error) {
+    console.log('Error:', error.message, '\n', error.stack);
+  }
+  else {
+    console.log('Error:', JSON.stringify(error));
+  }
+  process.exit(1);
+}

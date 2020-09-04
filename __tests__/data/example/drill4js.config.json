@@ -7,12 +7,16 @@
       "**/__tests__/data/example/js/libs/**",
       "**/__tests__/data/example/js/coverage/**",
       "**/__tests__/data/example/js/interfaces/**"
-    ],
-    "output": {
-      "url": "http://localhost:8080/agents/some-agent-1/plugins/test2code/ast",
-      "path": "./output/result.json",
-      "spaces": 2
-    }
+    ]
+  },
+  "bundle": {
+    "pattern": "__tests__/data/example/js/**/*.js",
+    "ignore": [
+      "**/__tests__/data/example/js/**/*.map",
+      "**/__tests__/data/example/js/libs/**",
+      "**/__tests__/data/example/js/coverage/**",
+      "**/__tests__/data/example/js/interfaces/**"
+    ]
   },
   "sourcemaps": {
     "pattern": [
@@ -22,9 +26,11 @@
       "**/__tests__/data/example/js/libs/**",
       "**/__tests__/data/example/js/coverage/**",
       "**/__tests__/data/example/js/interfaces/**"
-    ],
-    "output": {
-      "url": "http://localhost:8080/agents/some-agent-1/plugins/test2code/source-maps"
-    }
+    ]
+  },
+  "output": {
+    "agentId": "todomvc-typescript-angular",
+    "agentApiUrl": "http://localhost:8080",
+    "path": "./output/result.json"
   }
 }
