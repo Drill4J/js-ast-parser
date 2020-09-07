@@ -8,7 +8,7 @@ var todos;
             this.completed = completed;
         }
         return TodoItem;
-    }());
+    })();
     todos.TodoItem = TodoItem;
 })(todos || (todos = {}));
 /// <reference path='../_all.ts' />
@@ -91,7 +91,7 @@ var todos;
             localStorage.setItem(this.STORAGE_ID, JSON.stringify(todos));
         };
         return TodoStorage;
-    }());
+    })();
     todos_1.TodoStorage = TodoStorage;
 })(todos || (todos = {}));
 /// <reference path='../_all.ts' />
@@ -187,7 +187,7 @@ var todos;
             'filterFilter'
         ];
         return TodoCtrl;
-    }());
+    })();
     todos.TodoCtrl = TodoCtrl;
 })(todos || (todos = {}));
 /// <reference path='_all.ts' />
