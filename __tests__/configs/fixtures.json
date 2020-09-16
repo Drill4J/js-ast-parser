@@ -1,9 +1,14 @@
 {
   "sources": {
-    "pattern": "__tests__/fixtures/processor/**/function-overloading.ts",
-    "output": {
-      "path": "./output/result.json",
-      "spaces": 2
-    }
+    "pattern": "__tests__/fixtures/processor/**/function-overloading.ts"
+  },
+  "bundle": {
+    "pattern": "placehodler"
+  },
+  "sourcemaps": {
+    "pattern": "placeholder"
+  },
+  "output": {
+    "path": "./output/result.json"
   }
 }

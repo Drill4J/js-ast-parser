@@ -35,9 +35,12 @@ function processTree (ast) {
 }
 
 export function processSubtree(subtree) {
+  const captureProbesOutsideFunctions = subtree.type === AST_NODE_TYPES.Program;
+
   const functions = [];
   const subtrees = [];
   let functionNode: FunctionNode = null;
+  const nonFunctionProbesSet = new Set<number>();
   
   Traverser.traverse(subtree, {
     enter(node, parent) {
@@ -50,7 +53,13 @@ export function processSubtree(subtree) {
       //convert PascalCased node type to camelCased handler name
       const handlerName = node.type[0].toLowerCase() + node.type.substring(1, node.type.length);
       const handler = handlers[handlerName];
-      if (!handler) return;
+      if (!handler) {
+        if (captureProbesOutsideFunctions) {
+          nonFunctionProbesSet.add(node.loc.start.line);
+          nonFunctionProbesSet.add(node.loc.end.line);
+        }
+        return;
+      }
 
       const ctx: NodeContext = {
         node,
@@ -113,6 +122,21 @@ export function processSubtree(subtree) {
       }
     }
   })
+
+  const functionProbes = functions.reduce((a,f) => [...a, ...f.probes], []);
+
+  const nonFunctionProbes = Array.from(nonFunctionProbesSet)
+    .sort((a, b) => a - b)
+    .filter(x => !(functionProbes as Array<number>).includes(x));
+
+  if (nonFunctionProbes.length > 0) {
+    functions.unshift({
+      name: 'GLOBAL',
+      isAnonymous: false,
+      probes: nonFunctionProbes,
+      params: []
+    });
+  }
 
   return { functions, subtrees };
 }
