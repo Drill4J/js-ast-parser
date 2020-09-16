@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Debug on fixtures",
       "program": "${workspaceFolder}/dist/bin/index.js",
-      "args": ["-c","__tests__/configs/fixtures.json", "-b", "0.0.1"],
+      "args": ["-c","__tests__/configs/fixtures.json", "-b", "0.0.1", "--debug"],
       "env": {
         "FORCE_COLOR": "3", // required in order for chalk to work within vscode
       }

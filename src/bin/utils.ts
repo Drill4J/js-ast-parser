@@ -10,9 +10,6 @@ export function findFilePaths(pattern, ignore) {
     ignore
   });
 
-  if (!Array.isArray(result) || result.length === 0) {
-    throw new Error(`No source files found\n\tpattern ${pattern}${Array.isArray(ignore) ? `\n\tignored ${ignore.join(', ')}` : ''}`);
-  }
   return result;
 }
 

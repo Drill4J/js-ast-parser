@@ -15,6 +15,7 @@ program
   .option('-c, --config <path>', 'path to config file')
   .option('-b, --build-version <version>', 'build version')
   .option('-s, --skip-errors', 'skip files with processing errors')
+  .option('--debug', 'debug mode, for development only')
   .parse(process.argv);
 
 console.log('Program started\n');
@@ -62,7 +63,7 @@ function processSources(paths) {
 function findBundleHashes({ pattern, ignore }) {
   console.log('Searching bundle files');
   const paths = findFilePaths(pattern, ignore);
-  if (paths.length === 0) {
+  if (paths.length === 0 && !program.debug) {
     throw new Error('could not find bundle files');
   }
   console.log('Bundle files found:\n\t', paths.join('\n\t'), '\n');
@@ -81,7 +82,7 @@ function findBundleHashes({ pattern, ignore }) {
 function findSourcemaps({ pattern, ignore }) {
   console.log('Searching sourcemaps');
   const paths = findFilePaths(pattern, ignore);
-  if (paths.length === 0) throw new Error('could not find sourcemaps');
+  if (paths.length === 0 && !program.debug) throw new Error('could not find sourcemaps');
   console.log('Sourcemaps found:\n\t', paths.join('\n\t'), '\n');
   const result = paths.map(x => fsExtra.readJSONSync(x, { encoding: 'utf-8' }));
   return result;
