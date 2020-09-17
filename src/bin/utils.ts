@@ -1,7 +1,6 @@
 import glob from 'fast-glob';
 import fsExtra from 'fs-extra';
 import joi from 'joi';
-import crypto from 'crypto';
 
 export function findFilePaths(pattern, ignore) {
   const result = glob.sync(pattern, {
@@ -11,13 +10,6 @@ export function findFilePaths(pattern, ignore) {
   });
 
   return result;
-}
-
-export function getHash(data) {
-  return crypto
-    .createHash("sha256")
-    .update(data)
-    .digest("hex");
 }
 
 const configSchema = joi.object({

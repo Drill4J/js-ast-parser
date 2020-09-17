@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import axios from 'axios';
 import program from 'commander';
+import crypto from 'crypto';
 import fsExtra from 'fs-extra';
 import processSource from '../index';
 import {
   findFilePaths,
-  getConfig,
-  getHash
+  getConfig
 } from './utils';
 
 process.on('uncaughtException', exceptionHandler)
@@ -70,13 +70,29 @@ function findBundleHashes({ pattern, ignore }) {
 
   const result = paths.map(path => {
     const bundleFile = fsExtra.readFileSync(path, 'utf8');
-    const hash = getHash(bundleFile.replace(/\r\n/g, '\n'));
+    const hash = getHash(unifyLineEndings(bundleFile));
     return {
       file: path,
       hash
     };
   });
   return result;
+}
+
+function getHash(data) {
+  return crypto
+    .createHash("sha256")
+    .update(data)
+    .digest("hex");
+}
+
+function unifyLineEndings(str: string): string {
+  // reference https://www.ecma-international.org/ecma-262/10.0/#sec-line-terminators
+  const LF = '\u000A';
+  const CRLF = '\u000D\u000A';
+  const LS = '\u2028';
+  const PS = '\u2028';
+  return str.replace(RegExp(`(${CRLF}|${LS}|${PS})`, 'g'), LF);
 }
 
 function findSourcemaps({ pattern, ignore }) {
