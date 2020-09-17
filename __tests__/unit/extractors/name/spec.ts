@@ -56,7 +56,7 @@ describe('Name extractor', function () {
     expect(data).toEqual('getName');
   })
 
-  test.only('from class declaration must return value matching class identifier', () => {
+  test('from class declaration must return value matching class identifier', () => {
     const fixture = prepareCtx(
       `class User {
         constructor() {
