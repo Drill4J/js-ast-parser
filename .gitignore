@@ -4,5 +4,4 @@ demo/
 coverage/
 output/
 sample/*/package-lock.json
-package-lock.json
 *.log
