@@ -5,8 +5,7 @@
   "main": "dist/bin/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "test": "jest -c jest.unit.js && jest -c integration.conf.json --coverage",
-    "e2e": "jest -c e2e.conf.json",
+    "test": "jest -c jest.unit.js --coverage",
     "unit": "jest -c jest.unit.js"
   },
   "author": "",
@@ -24,17 +23,6 @@
     "ts-node": "^8.5.2",
     "tsconfig-paths": "^3.9.0",
     "upath": "^1.2.0"
-  },
-  "ava": {
-    "babel": false,
-    "compileEnhancements": false,
-    "extensions": [
-      "ts"
-    ],
-    "require": [
-      "ts-node/register",
-      "tsconfig-paths/register"
-    ]
   },
   "files": [
     "dist/**/*"
