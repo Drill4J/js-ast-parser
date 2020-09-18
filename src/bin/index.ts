@@ -4,12 +4,9 @@ import program from 'commander';
 import crypto from 'crypto';
 import fsExtra from 'fs-extra';
 import processSource from '../index';
-import {
-  findFilePaths,
-  getConfig
-} from './utils';
+import { findFilePaths, getConfig } from './utils';
 
-process.on('uncaughtException', exceptionHandler)
+process.on('uncaughtException', exceptionHandler);
 
 program
   .option('-c, --config <path>', 'path to config file')
@@ -31,8 +28,8 @@ sendResults(config.output, {
   data: {
     bundleHashes,
     data: processedSources,
-    sourcemaps
-  }
+    sourcemaps,
+  },
 });
 
 function processSources(paths) {
@@ -43,13 +40,14 @@ function processSources(paths) {
       console.log('\t', path);
       const source = fsExtra.readFileSync(path, 'utf8');
       const processedSource = processSource(source);
-      processedSource.forEach(x => result.push({
-        path,
-        suffix: x.name,
-        methods: x.functions,
-      }));
-    }
-    catch (e) {
+      processedSource.forEach(x =>
+        result.push({
+          path,
+          suffix: x.name,
+          methods: x.functions,
+        }),
+      );
+    } catch (e) {
       console.log('\t failed to parse', path, 'due to\n', JSON.stringify(e), '\n');
       if (!program.skipErrors) {
         throw e;
@@ -73,17 +71,14 @@ function findBundleHashes({ pattern, ignore }) {
     const hash = getHash(unifyLineEndings(bundleFile));
     return {
       file: path,
-      hash
+      hash,
     };
   });
   return result;
 }
 
 function getHash(data) {
-  return crypto
-    .createHash("sha256")
-    .update(data)
-    .digest("hex");
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
 function unifyLineEndings(str: string): string {
@@ -122,7 +117,7 @@ async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
     console.log('Send results to', agentApiUrl, '\n');
     await axios.post(`${agentApiUrl}/agents/${agentId}/plugins/test2code/build`, buildInfo, {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-    })
+    });
   }
   console.log('Program finished. Exiting...');
 }
@@ -130,8 +125,7 @@ async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
 function exceptionHandler(error: unknown) {
   if (error instanceof Error) {
     console.log('Error:', error.message, '\n', error.stack);
-  }
-  else {
+  } else {
     console.log('Error:', JSON.stringify(error));
   }
   process.exit(1);

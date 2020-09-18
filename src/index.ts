@@ -1,5 +1,5 @@
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import Traverser from "eslint/lib/shared/traverser"; // TODO test on TS-specific keys
+import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
+import Traverser from 'eslint/lib/shared/traverser'; // TODO test on TS-specific keys
 import * as handlers from './handlers';
 import parser from './parser';
 import { FunctionNode, NodeContext, Queue, Subtree } from './types';
@@ -9,11 +9,11 @@ export default function processSource(source) {
   return processTree(ast);
 }
 
-function processTree (ast) {
+function processTree(ast) {
   const results = [];
-  
+
   const subtree: Subtree = { ast, name: null };
-  const queue: Queue = [ subtree ];
+  const queue: Queue = [subtree];
 
   while (queue.length > 0) {
     const processed = processSubtree(queue[0].ast);
@@ -41,7 +41,7 @@ export function processSubtree(subtree) {
   const subtrees = [];
   let functionNode: FunctionNode = null;
   const nonFunctionProbesSet = new Set<number>();
-  
+
   Traverser.traverse(subtree, {
     enter(node, parent) {
       const isRoot = !parent;
@@ -50,7 +50,7 @@ export function processSubtree(subtree) {
       // ignore both callbacks and IIFEs
       if (parent.type === AST_NODE_TYPES.CallExpression) return;
 
-      //convert PascalCased node type to camelCased handler name
+      // convert PascalCased node type to camelCased handler name
       const handlerName = node.type[0].toLowerCase() + node.type.substring(1, node.type.length);
       const handler = handlers[handlerName];
       if (!handler) {
@@ -65,10 +65,10 @@ export function processSubtree(subtree) {
         node,
         result: {},
         flags: {},
-        traverserContext: this
+        traverserContext: this,
       };
       handler(ctx);
-      
+
       if (ctx.flags.handleAsSeparateTree) {
         subtrees.push({
           ast: ctx.node,
@@ -87,9 +87,11 @@ export function processSubtree(subtree) {
         };
         return;
       }
-      
+
       const isChildNode = ctx.traverserContext.parents().includes(functionNode.ctx.node);
-      if (!isChildNode) return; // TODO warning // TODO never suppose to happen, since functionNode is always created beforehand and the parent pointer is moved when a traverser is leaving the node
+      // TODO never suppose to happen, since functionNode is always created beforehand
+      // and the parent pointer is moved when a traverser is leaving the node
+      if (!isChildNode) return; // TODO warning
 
       functionNode = {
         ctx,
@@ -98,7 +100,7 @@ export function processSubtree(subtree) {
     },
     leave(node) {
       if (!functionNode) return;
-      
+
       //  TODO abstract leave hooks ?
       //  TODO is it shared state mutation?
       const isLeavingTrackedNode = node === functionNode.ctx.node;
@@ -106,24 +108,24 @@ export function processSubtree(subtree) {
         if (functionNode.parent) {
           const parent = functionNode.parent.ctx.result;
           const child = functionNode.ctx.result;
-          
-          const probesToRemove = parent.probes.filter(probe =>
-            !child.isAnonymous && child.probes.includes(probe) ||
-            child.removedProbes && child.removedProbes.includes(probe));
+
+          const probesToRemove = parent.probes.filter(
+            probe => (!child.isAnonymous && child.probes.includes(probe)) || (child.removedProbes && child.removedProbes.includes(probe)),
+          );
 
           if (probesToRemove && !Array.isArray(parent.removedProbes)) {
             parent.removedProbes = [];
           }
 
-          parent.probes = parent.probes.filter(probe => !probesToRemove.includes(probe))
+          parent.probes = parent.probes.filter(probe => !probesToRemove.includes(probe));
           parent.removedProbes = parent.removedProbes.concat(probesToRemove);
         }
         functionNode = functionNode.parent;
       }
-    }
-  })
+    },
+  });
 
-  const functionProbes = functions.reduce((a,f) => [...a, ...f.probes], []);
+  const functionProbes = functions.reduce((a, f) => [...a, ...f.probes], []);
 
   const nonFunctionProbes = Array.from(nonFunctionProbesSet)
     .sort((a, b) => a - b)
@@ -134,7 +136,7 @@ export function processSubtree(subtree) {
       name: 'GLOBAL',
       isAnonymous: false,
       probes: nonFunctionProbes,
-      params: []
+      params: [],
     });
   }
 

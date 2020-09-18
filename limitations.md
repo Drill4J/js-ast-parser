@@ -1,10 +1,12 @@
 # Known limitations
 
 ## Naming collisions
+
 Following examples display sourcefiles that will produce multiple functions with same names.
 Currently functions from this examples are impossible to distinguish from their same-named counterparts.
 
 ### Block statements
+
 ```
   function a () {
     console.log('im first')
@@ -15,6 +17,7 @@ Currently functions from this examples are impossible to distinguish from their 
     }
   }
 ```
+
 ### IIFEs
 
 ```
@@ -40,9 +43,11 @@ Currently functions from this examples are impossible to distinguish from their 
     }
   ]
 ```
+
 **Note**: functions inside array expression assigned to a `var`, `const` or `property` will produce correct result
 
-*valid example*:
+_valid example_:
+
 ```
   function a() {
     console.log('im first')
@@ -55,7 +60,9 @@ Currently functions from this examples are impossible to distinguish from their 
 ```
 
 ### Functions nested in elements of array expressions
-Algorithm is unable to distinguish between functions nested inside objects that are elements of an array 
+
+Algorithm is unable to distinguish between functions nested inside objects that are elements of an array
+
 ```
   function a() {
     console.log('im first')
@@ -70,7 +77,8 @@ Algorithm is unable to distinguish between functions nested inside objects that 
   ]
 ```
 
-*valid example*: though functions nested in array directly will get distinct names
+_valid example_: though functions nested in array directly will get distinct names
+
 ```
   function a() {
     console.log('im first')

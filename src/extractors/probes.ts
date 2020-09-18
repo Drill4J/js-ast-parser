@@ -1,4 +1,4 @@
-import { simpleTraverse } from "@typescript-eslint/typescript-estree/dist/simple-traverse";
+import { simpleTraverse } from '@typescript-eslint/typescript-estree/dist/simple-traverse';
 import deepClone from 'rfdc';
 
 import { NodeContext } from '../types';
@@ -10,7 +10,7 @@ export default function (ctx: NodeContext) {
     console.log('extractors:probe', ctx.node.type, 'node has no body', ctx.node.loc.start, ctx.node.loc.end);
     return undefined;
   }
-  
+
   const probeSet = new Set<number>();
   const tree = deepClone()(ctx.node);
   simpleTraverse(tree, {

@@ -1,43 +1,54 @@
 {
-  "name": "drill4js-cli",
-  "version": "0.3.5",
-  "description": "",
-  "main": "dist/bin/index.js",
+  "version": "0.3.6",
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "unit": "jest -c jest.unit.js",
     "test": "jest -c jest.unit.js --coverage",
-    "unit": "jest -c jest.unit.js"
+    "prebuild": "eslint . --fix --ext .ts && rm -rf dist",
+    "build": "tsc"
   },
-  "author": "",
-  "license": "ISC",
+  "name": "drill4js-cli",
+  "main": "dist/bin/index.js",
+  "license": "Apache-2.0",
+  "husky": {
+    "hooks": {
+      "pre-commit": "git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath \"{}\"' ."
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
   "devDependencies": {
-    "@ava/babel-plugin-throws-helper": "^4.0.0",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^25.1.1",
-    "ava": "^2.4.0",
-    "babel-plugin-ava-throws-helper": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "git-format-staged": "^2.1.0",
+    "husky": "^4.3.0",
     "jest": "^25.1.0",
     "jest-extended": "^0.11.5",
-    "prettier": "^1.19.1",
+    "prettier": "^2.1.2",
     "ts-jest": "^25.1.0",
     "ts-node": "^8.5.2",
     "tsconfig-paths": "^3.9.0",
     "upath": "^1.2.0"
   },
-  "files": [
-    "dist/**/*"
-  ],
-  "bin": "./dist/bin/index.js",
+  "description": "",
   "dependencies": {
-    "@typescript-eslint/parser": "^2.8.0",
-    "@typescript-eslint/typescript-estree": "^2.34.0",
-    "axios": "^0.19.0",
-    "commander": "^4.0.1",
-    "eslint": "^6.6.0",
-    "fast-glob": "^3.1.1",
-    "fs-extra": "^8.1.0",
-    "joi": "^17.2.0",
+    "typescript": "^3.7.2",
     "rfdc": "^1.1.4",
-    "typescript": "^3.7.2"
-  }
+    "joi": "^17.2.0",
+    "fs-extra": "^8.1.0",
+    "fast-glob": "^3.1.1",
+    "eslint": "^6.6.0",
+    "commander": "^4.0.1",
+    "axios": "^0.19.0",
+    "@typescript-eslint/typescript-estree": "^2.34.0",
+    "@typescript-eslint/parser": "^2.8.0"
+  },
+  "bin": "./dist/bin/index.js",
+  "author": ""
 }

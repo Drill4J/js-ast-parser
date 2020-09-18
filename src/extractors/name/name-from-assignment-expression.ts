@@ -1,5 +1,5 @@
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { AssignmentExpression, Identifier } from "@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree";
+import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
+import { AssignmentExpression, Identifier } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 
 export default function extractNameFromAssignmentExpression(assignmentExpression: AssignmentExpression): string {
   const target = assignmentExpression.left;
@@ -10,9 +10,10 @@ export default function extractNameFromAssignmentExpression(assignmentExpression
   */
   if (target.type === AST_NODE_TYPES.MemberExpression) {
     let object: any = target;
-    const names = []
+    const names = [];
     while (object.property) {
-      if ((object.property as Identifier).name) { // TODO properties with non-identifiers names will get skipped. Is it even possible?
+      if ((object.property as Identifier).name) {
+        // TODO properties with non-identifiers names will get skipped. Is it even possible?
         names.push((object.property as Identifier).name);
       }
       object = object.object;
@@ -26,7 +27,8 @@ export default function extractNameFromAssignmentExpression(assignmentExpression
     someVariable = function doStuff() {}
   */
   if (target.type === AST_NODE_TYPES.Identifier) {
-    return target.name
+    return target.name;
   }
 
+  return null;
 }
