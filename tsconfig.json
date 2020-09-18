@@ -2,13 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es2016",
+    "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": "./src"
+    "baseUrl": "src"
   },
   "lib": ["es2016"],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "__tests__", "**/*.spec.ts"],
+  "exclude": ["node_modules", "__tests__", "**/*.spec.ts"]
 }
