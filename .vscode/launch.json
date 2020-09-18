@@ -9,9 +9,9 @@
       "request": "launch",
       "name": "Debug on fixtures",
       "program": "${workspaceFolder}/dist/bin/index.js",
-      "args": ["-c","__tests__/configs/fixtures.json", "-b", "0.0.1", "--debug"],
+      "args": ["-c", "__tests__/configs/fixtures.json", "-b", "0.0.1", "--debug"],
       "env": {
-        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+        "FORCE_COLOR": "3" // required in order for chalk to work within vscode
       }
     },
     {
@@ -19,9 +19,9 @@
       "request": "launch",
       "name": "Example parse",
       "program": "${workspaceFolder}/dist/bin/index.js",
-      "args": ["-c","__tests__/data/example/drill4js.config.json", "-b", "0.0.1"],
+      "args": ["-c", "__tests__/data/example/drill4js.config.json", "-b", "0.0.1"],
       "env": {
-        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+        "FORCE_COLOR": "3" // required in order for chalk to work within vscode
       }
     },
     {
@@ -29,9 +29,9 @@
       "request": "launch",
       "name": "SAMPLE react-real-world",
       "program": "${workspaceFolder}/dist/bin/index.js",
-      "args": ["-c","sample/react-real-world/.drill4jrc", "-b", "0.0.1"],
+      "args": ["-c", "sample/react-real-world/.drill4jrc", "-b", "0.0.1"],
       "env": {
-        "FORCE_COLOR": "3", // required in order for chalk to work within vscode
+        "FORCE_COLOR": "3" // required in order for chalk to work within vscode
       }
     },
     {
@@ -52,12 +52,7 @@
       "request": "launch",
       "name": "Unit - Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": [
-        "--runTestsByPath",
-        "${relativeFile}",
-        "-c",
-        "jest.unit.js"
-      ],
+      "args": ["--runTestsByPath", "${relativeFile}", "-c", "jest.unit.js"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "disableOptimisticBPs": true,

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import deepClone from 'rfdc';
-import { simpleTraverse } from "@typescript-eslint/typescript-estree/dist/simple-traverse";
+import { simpleTraverse } from '@typescript-eslint/typescript-estree/dist/simple-traverse';
 
 import { NodeContext } from '../types';
 import isNodeWithBody from './utils/is-node-with-body';
@@ -18,20 +18,18 @@ function removeLocationInfo(ast): any {
   const result = deepClone()(ast);
   simpleTraverse(result, {
     enter: node => {
+      // eslint-disable-next-line no-param-reassign
       delete node.range;
+      // eslint-disable-next-line no-param-reassign
       delete node.loc;
     },
   });
-  return result
+  return result;
 }
 
 function stringifyAndHash(object: any): string {
-  const fingerprint =
-    JSON.stringify(object)
+  const fingerprint = JSON.stringify(object);
 
-  const hash = crypto
-    .createHash("sha256")
-    .update(fingerprint)
-    .digest("hex");
+  const hash = crypto.createHash('sha256').update(fingerprint).digest('hex');
   return hash;
 }

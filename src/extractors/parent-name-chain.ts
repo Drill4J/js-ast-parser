@@ -4,14 +4,15 @@ import extractName from './name';
 
 export default function (ctx: NodeContext) {
   const parents = ctx.traverserContext.parents();
-  
+
   return parents
     .map(parent => {
       switch (parent.type) {
-        case AST_NODE_TYPES.ArrayExpression:
+        case AST_NODE_TYPES.ArrayExpression: {
           const index = parent.elements.findIndex(element => element === ctx.node); // searching only direct descendants
-          if (index === -1) return ''; 
+          if (index === -1) return '';
           return index.toString();
+        }
 
         case AST_NODE_TYPES.ExportDefaultDeclaration:
           return 'default';
@@ -24,5 +25,5 @@ export default function (ctx: NodeContext) {
           return extractName(parent);
       }
     })
-    .filter(x => !!x)
+    .filter(x => !!x);
 }
