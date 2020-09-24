@@ -1,13 +1,14 @@
 {
   "version": "0.3.6",
   "scripts": {
+    "dev": "set NODE_ENV=development&& npx webpack --config webpack.config.js",
     "unit": "jest -c jest.unit.js",
     "test": "jest -c jest.unit.js --coverage",
-    "prebuild": "eslint . --fix --ext .ts && rm -rf dist",
-    "build": "tsc"
+    "start": "node dist/index.js",
+    "release": "set NODE_ENV=production&& npx webpack --config webpack.config.js"
   },
   "name": "drill4js-cli",
-  "main": "dist/bin/index.js",
+  "main": "dist/index.js",
   "license": "Apache-2.0",
   "husky": {
     "hooks": {
@@ -21,6 +22,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^25.1.1",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "awesome-typescript-loader": "^5.2.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-typescript": "^2.3.0",
@@ -30,11 +32,15 @@
     "husky": "^4.3.0",
     "jest": "^25.1.0",
     "jest-extended": "^0.11.5",
+    "nodemon": "^2.0.4",
     "prettier": "^2.1.2",
     "ts-jest": "^25.1.0",
     "ts-node": "^8.5.2",
     "tsconfig-paths": "^3.9.0",
-    "upath": "^1.2.0"
+    "upath": "^1.2.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "^2.5.2"
   },
   "description": "",
   "dependencies": {

@@ -1,0 +1,14 @@
+{
+  "restartable": "rs",
+  "ignore": [".git", "node_modules/**/node_modules"],
+  "verbose": true,
+  "execMap": {
+    "js": "node"
+  },
+  "watch": ["dist/"],
+  "env": {
+    "FORCE_COLOR": "3"
+  },
+  "args": ["-c", "__tests__/data/example/drill4js.config.json", "-b", "0.0.1"],
+  "ext": "js"
+}

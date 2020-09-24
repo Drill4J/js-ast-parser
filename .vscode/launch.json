@@ -5,10 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Nodemon",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "nodemon",
+      "preLaunchTask": "webpack dev",
+      "program": "${workspaceFolder}/dist/index.js",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Debug on fixtures",
-      "program": "${workspaceFolder}/dist/bin/index.js",
+      "program": "${workspaceFolder}/dist/index.js",
       "args": ["-c", "__tests__/configs/fixtures.json", "-b", "0.0.1", "--debug"],
       "env": {
         "FORCE_COLOR": "3" // required in order for chalk to work within vscode
@@ -18,7 +29,7 @@
       "type": "node",
       "request": "launch",
       "name": "Example parse",
-      "program": "${workspaceFolder}/dist/bin/index.js",
+      "program": "${workspaceFolder}/dist/index.js",
       "args": ["-c", "__tests__/data/example/drill4js.config.json", "-b", "0.0.1"],
       "env": {
         "FORCE_COLOR": "3" // required in order for chalk to work within vscode
@@ -28,7 +39,7 @@
       "type": "node",
       "request": "launch",
       "name": "SAMPLE react-real-world",
-      "program": "${workspaceFolder}/dist/bin/index.js",
+      "program": "${workspaceFolder}/dist/index.js",
       "args": ["-c", "sample/react-real-world/.drill4jrc", "-b", "0.0.1"],
       "env": {
         "FORCE_COLOR": "3" // required in order for chalk to work within vscode

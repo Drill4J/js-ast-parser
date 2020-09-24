@@ -8,6 +8,35 @@
       "tsconfig": "tsconfig.json",
       "problemMatcher": ["$tsc"],
       "group": "build"
+    },
+    {
+      "type": "shell",
+      "label": "webpack dev",
+      "command": "npx",
+      "options": {
+        "env": {
+          "NODE_ENV": "development"
+        }
+      },
+      "isBackground": true,
+      "args": ["webpack", "--config webpack.config.js"],
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": ".",
+          }
+        }
+      ]
     }
   ]
 }

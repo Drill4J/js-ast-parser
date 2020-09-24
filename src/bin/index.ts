@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import axios from 'axios';
 import program from 'commander';
 import crypto from 'crypto';
