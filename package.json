@@ -5,7 +5,8 @@
     "unit": "jest -c jest.unit.js",
     "test": "jest -c jest.unit.js --coverage",
     "start": "node dist/index.js",
-    "release": "set NODE_ENV=production&& npx webpack --config webpack.config.js"
+    "release": "set NODE_ENV=production&& npx webpack --config webpack.config.js",
+    "lint": "eslint . --ext .ts --fix"
   },
   "name": "drill4js-cli",
   "main": "dist/index.js",
@@ -26,6 +27,7 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-import-resolver-typescript": "^2.3.0",
+    "eslint-plugin-drill4j": "0.0.2",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
     "git-format-staged": "^2.1.0",
