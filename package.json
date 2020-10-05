@@ -2,8 +2,8 @@
   "version": "0.3.6",
   "scripts": {
     "dev": "set NODE_ENV=development&& npx webpack --config webpack.config.js",
-    "unit": "jest -c jest.unit.js",
-    "test": "jest -c jest.unit.js --coverage",
+    "test": "jest -c jest.unit.js",
+    "coverage": "jest -c jest.unit.js --coverage --colors",
     "start": "node dist/index.js",
     "release": "set NODE_ENV=production&& npx webpack --config webpack.config.js",
     "lint": "eslint . --ext .ts --fix"

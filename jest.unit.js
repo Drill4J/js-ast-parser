@@ -26,6 +26,7 @@ module.exports = {
       tsConfig: './test.tsconfig.json',
     },
   },
+  collectCoverageFrom: ['src/**', '!**/node_modules/**'],
   coverageThreshold: {
     global: {
       branches: 80,
