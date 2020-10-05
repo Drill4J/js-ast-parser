@@ -100,7 +100,7 @@ function unifyLineEndings(str: string): string {
   const LF = '\u000A';
   const CRLF = '\u000D\u000A';
   const LS = '\u2028';
-  const PS = '\u2028';
+  const PS = '\u2029';
   return str.replace(RegExp(`(${CRLF}|${LS}|${PS})`, 'g'), LF);
 }
 
