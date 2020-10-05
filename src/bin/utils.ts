@@ -53,12 +53,14 @@ const configSchema = joi
         joi.object({
           agentId: joi.string().required(),
           agentApiUrl: joi.string().uri().required(),
+          groupId: joi.string(),
           path: joi.string().required(),
           spaces: joi.alternatives(joi.string(), joi.number()),
         }),
         joi.object({
           agentId: joi.string().required(),
           agentApiUrl: joi.string().uri().required(),
+          groupId: joi.string(),
         }),
         joi.object({
           path: joi.string().required(),
