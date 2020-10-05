@@ -18,13 +18,14 @@ import program from 'commander';
 import crypto from 'crypto';
 import fsExtra from 'fs-extra';
 import processSource from '../index';
+import { Output } from './types';
 import { findFilePaths, getConfig } from './utils';
 
 process.on('uncaughtException', exceptionHandler);
 
 program
-  .option('-c, --config <path>', 'path to config file')
-  .option('-b, --build-version <version>', 'build version')
+  .requiredOption('-c, --config <path>', 'path to config file')
+  .requiredOption('-b, --build-version <version>', 'build version')
   .option('-s, --skip-errors', 'skip files with processing errors')
   .option('--debug', 'debug mode, for development only')
   .parse(process.argv);
@@ -37,14 +38,19 @@ const sourcemaps = findSourcemaps(config.sourcemaps);
 const sourcePaths = findSourcePaths(config.sources);
 const processedSources = processSources(sourcePaths);
 
-sendResults(config.output, {
+const output: Output = {
   version: program.buildVersion,
   data: {
     bundleHashes,
     data: processedSources,
     sourcemaps,
   },
-});
+}
+const { groupId } = config.output;
+if (groupId) {
+  output.groupId = groupId;
+}
+sendResults(config.output, output);
 
 function processSources(paths) {
   console.log('Processing sources');
