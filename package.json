@@ -1,5 +1,5 @@
 {
-  "version": "0.3.6",
+  "version": "0.3.8",
   "scripts": {
     "dev": "set NODE_ENV=development&& npx webpack --config webpack.config.js",
     "test": "jest -c jest.unit.js",
@@ -57,6 +57,6 @@
     "@typescript-eslint/typescript-estree": "^2.34.0",
     "@typescript-eslint/parser": "^2.8.0"
   },
-  "bin": "./dist/bin/index.js",
+  "bin": "./dist/index.js",
   "author": ""
 }
