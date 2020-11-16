@@ -17,7 +17,7 @@ export interface Output {
   version: BuildVersion,
   groupId?: GroupId,
   data: {
-    bundleHashes, // TODO local duplicate typings / packaged typings / monorepo with middleware?
+    bundleFiles, // TODO local duplicate typings / packaged typings / monorepo with middleware?
     data,
     sourcemaps,
   },

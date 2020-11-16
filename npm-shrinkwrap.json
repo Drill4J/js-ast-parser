@@ -1,6 +1,6 @@
 {
   "name": "drill4js-cli",
-  "version": "0.3.9",
+  "version": "0.3.11",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -320,6 +320,11 @@
           "integrity": "sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ=="
         }
       }
+    },
+    "cuint": {
+      "version": "0.2.2",
+      "resolved": "https://registry.npmjs.org/cuint/-/cuint-0.2.2.tgz",
+      "integrity": "sha1-QICG1AlVDCYxFVYZ6fp7ytw7mRs="
     },
     "debug": {
       "version": "4.1.1",
@@ -1167,6 +1172,11 @@
       "resolved": "https://registry.npmjs.org/universalify/-/universalify-0.1.2.tgz",
       "integrity": "sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg=="
     },
+    "upath": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/upath/-/upath-2.0.0.tgz",
+      "integrity": "sha512-ghi1XxsVYPOZPDsOZrfOJIwQU5I3JVYB3Q6IbBGn1KFeOa89i0nUy5tCEkY9pVm83U83qZ1QG40RQKGknllV4w=="
+    },
     "uri-js": {
       "version": "4.2.2",
       "resolved": "https://registry.npmjs.org/uri-js/-/uri-js-4.2.2.tgz",
@@ -1204,6 +1214,14 @@
       "integrity": "sha512-/lg70HAjtkUgWPVZhZcm+T4hkL8Zbtp1nFNOn3lRrxnlv50SRBv7cR7RqR+GMsd3hUXy9hWBo4CHTbFTcOYwig==",
       "requires": {
         "mkdirp": "^0.5.1"
+      }
+    },
+    "xxhashjs": {
+      "version": "0.2.2",
+      "resolved": "https://registry.npmjs.org/xxhashjs/-/xxhashjs-0.2.2.tgz",
+      "integrity": "sha512-AkTuIuVTET12tpsVIQo+ZU6f/qDmKuRUcjaqR+OIvm+aCBsZ95i7UVY5WJ9TMsSaZ0DA2WxoZ4acu0sPH+OKAw==",
+      "requires": {
+        "cuint": "^0.2.2"
       }
     }
   }

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 import axios from 'axios';
+import upath from 'upath';
 import program from 'commander';
-import crypto from 'crypto';
 import fsExtra from 'fs-extra';
+import xxHashJs from 'xxhashjs';
 import processSource from '../index';
 import { Output } from './types';
 import { findFilePaths, getConfig } from './utils';
@@ -33,7 +34,7 @@ program
 console.log('Program started\n');
 
 const config = getConfig(program.config);
-const bundleHashes = findBundleHashes(config.bundle);
+const bundleFiles = findBundleFiles(config.bundle);
 const sourcemaps = findSourcemaps(config.sourcemaps);
 const sourcePaths = findSourcePaths(config.sources);
 const processedSources = processSources(sourcePaths);
@@ -41,7 +42,7 @@ const processedSources = processSources(sourcePaths);
 const output: Output = {
   version: program.buildVersion,
   data: {
-    bundleHashes,
+    bundleFiles,
     data: processedSources,
     sourcemaps,
   },
@@ -78,7 +79,7 @@ function processSources(paths) {
   return result;
 }
 
-function findBundleHashes({ pattern, ignore }) {
+function findBundleFiles({ pattern, ignore }) {
   console.log('Searching bundle files');
   const paths = findFilePaths(pattern, ignore);
   if (paths.length === 0 && !program.debug) {
@@ -91,6 +92,7 @@ function findBundleHashes({ pattern, ignore }) {
     const hash = getHash(unifyLineEndings(bundleFile));
     return {
       file: path,
+      source: bundleFile,
       hash,
     };
   });
@@ -98,7 +100,9 @@ function findBundleHashes({ pattern, ignore }) {
 }
 
 function getHash(data) {
-  return crypto.createHash('sha256').update(data).digest('hex');
+  const seed = 0xABCD;
+  const hashFn = xxHashJs.h32(seed);
+  return hashFn.update(data).digest().toString(16);
 }
 
 function unifyLineEndings(str: string): string {
@@ -115,7 +119,14 @@ function findSourcemaps({ pattern, ignore }) {
   const paths = findFilePaths(pattern, ignore);
   if (paths.length === 0 && !program.debug) throw new Error('could not find sourcemaps');
   console.log('Sourcemaps found:\n\t', paths.join('\n\t'), '\n');
-  const result = paths.map(x => fsExtra.readJSONSync(x, { encoding: 'utf-8' }));
+  const result = paths.map(x => {
+    const fileName = upath.basename(x);
+    const sourcemap = fsExtra.readJSONSync(x, { encoding: 'utf-8' });
+    return {
+      sourcemap,
+      fileName
+    }
+  });
   return result;
 }
 
@@ -137,6 +148,7 @@ async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
     console.log('Send results to', agentApiUrl, '\n');
     await axios.post(`${agentApiUrl}/agents/${agentId}/plugins/test2code/build`, buildInfo, {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      maxContentLength: Infinity
     });
   }
   console.log('Program finished. Exiting...');
