@@ -56,14 +56,14 @@ sendResults(config.output, output);
 function processSources(paths) {
   console.log('Processing sources');
   const result = [];
-  paths.forEach(path => {
+  paths.forEach((path: string) => {
     try {
       console.log('\t', path);
       const source = fsExtra.readFileSync(path, 'utf8');
       const processedSource = processSource(source);
       processedSource.forEach(x =>
         result.push({
-          path,
+          path: config.output.omitPathPrefix ? path.replace(new RegExp(`^${config.output.omitPathPrefix}`),'') : path,
           suffix: x.name,
           methods: x.functions,
         }),
@@ -141,7 +141,7 @@ function findSourcePaths({ pattern, ignore }) {
 async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
   if (path) {
     console.log('Write AST data to', path, '\n');
-    await fsExtra.writeJSON(path, buildInfo.data, { spaces: 2 });
+    await fsExtra.writeJSON(upath.join(path, `build-info.${Date.now()}.json`), buildInfo, { spaces: 2 });
   }
 
   if (agentApiUrl) {

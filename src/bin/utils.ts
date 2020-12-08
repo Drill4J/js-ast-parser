@@ -56,15 +56,18 @@ const configSchema = joi
           groupId: joi.string(),
           path: joi.string().required(),
           spaces: joi.alternatives(joi.string(), joi.number()),
+          omitPathPrefix: joi.string(),
         }),
         joi.object({
           agentId: joi.string().required(),
           agentApiUrl: joi.string().uri().required(),
           groupId: joi.string(),
+          omitPathPrefix: joi.string(),
         }),
         joi.object({
           path: joi.string().required(),
           spaces: joi.alternatives(joi.string(), joi.number()),
+          omitPathPrefix: joi.string(),
         }),
       )
       .required(),
