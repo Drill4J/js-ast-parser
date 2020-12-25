@@ -28,6 +28,7 @@ export default function (node: Node) {
 
     case AST_NODE_TYPES.MethodDefinition:
     case AST_NODE_TYPES.Property:
+    case AST_NODE_TYPES.ClassProperty:
       return (node.key as Identifier).name;
 
     case AST_NODE_TYPES.AssignmentExpression:
