@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
+import { JSXElement, JSXFragment } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 import { NodeContext } from '../types';
 import extractName from './name';
+import extractNameFromJsxElement from './name/name-from-jsx-element';
 
 export default function (ctx: NodeContext) {
   const parents = ctx.traverserContext.parents();
 
   return parents
-    .map(parent => {
+    .map((parent, parentIndex) => {
       switch (parent.type) {
         case AST_NODE_TYPES.ArrayExpression: {
           const index = parent.elements.findIndex(element => element === ctx.node); // searching only direct descendants
@@ -32,13 +34,52 @@ export default function (ctx: NodeContext) {
         case AST_NODE_TYPES.ExportDefaultDeclaration:
           return 'default';
 
-        // ignore class in parentNameChain as it's treated as separate file
+        // ignore a class in a parentNameChain as it's treated as a separate file
         case AST_NODE_TYPES.ClassDeclaration:
           return '';
+
+        // TODO refactor
+        case AST_NODE_TYPES.JSXElement: {
+          const previousParent = parents[parentIndex - 1];
+          if (previousParent &&
+            (previousParent.type === AST_NODE_TYPES.JSXFragment || previousParent.type === AST_NODE_TYPES.JSXElement) &&
+            previousParent.children.length > 1) {
+            const siblings = getJsxElementSiblings(previousParent, parent);
+            if (siblings.length > 1) {
+              const siblingIndex = siblings.findIndex(x => x === parent);
+              return `<${extractName(parent)}>-${siblingIndex + 1}`;
+            }
+          }
+          return `<${extractName(parent)}>`;
+        }
+
+        // TODO refactor
+        case AST_NODE_TYPES.JSXFragment: {
+          const previousParent = parents[parentIndex - 1];
+          if (previousParent &&
+            (previousParent.type === AST_NODE_TYPES.JSXFragment || previousParent.type === AST_NODE_TYPES.JSXElement) &&
+            previousParent.children.length > 1) {
+            const siblings = parent.children.filter(x => x.type === AST_NODE_TYPES.JSXFragment)
+            if (siblings.length > 1) {
+              const siblingIndex = siblings.findIndex(x => x === parent);
+              return `<JSXFragment>-${siblingIndex + 1}`;
+            }
+          }
+          return '';
+        }
 
         default:
           return extractName(parent);
       }
     })
     .filter(x => !!x);
+}
+
+function getJsxElementSiblings(parent: JSXFragment | JSXElement, child: JSXElement) {
+  const childName = extractNameFromJsxElement(child);
+  return parent.children
+    .filter(x =>
+      x.type === AST_NODE_TYPES.JSXElement &&
+      extractNameFromJsxElement(x) === childName
+    )
 }

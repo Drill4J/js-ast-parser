@@ -16,6 +16,7 @@
 import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
 import { Identifier, Node } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 import extractNameFromAssignmentExpression from './name-from-assignment-expression';
+import extractNameFromJsxElement from './name-from-jsx-element';
 
 export default function (node: Node) {
   switch (node.type) {
@@ -25,6 +26,12 @@ export default function (node: Node) {
     case AST_NODE_TYPES.ClassDeclaration:
     case AST_NODE_TYPES.ClassExpression:
       return node.id && (node.id as Identifier).name;
+
+    case AST_NODE_TYPES.JSXElement:
+      return extractNameFromJsxElement(node);
+
+    case AST_NODE_TYPES.JSXAttribute:
+      return node.name.name;
 
     case AST_NODE_TYPES.MethodDefinition:
     case AST_NODE_TYPES.Property:
