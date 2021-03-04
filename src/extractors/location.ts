@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default as program } from './program';
-export { default as arrowFunctionExpression } from './arrow-function-expression';
-export { default as functionExpression } from './function-expression';
-export { default as functionDeclaration } from './function-declaration';
-export { default as classDeclaration } from './class-declaration';
-export { default as classExpression } from './class-expression';
+import { SourceLocation } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
+import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
+import { NodeContext } from '../types';
+
+export default function (ctx: NodeContext): SourceLocation {
+  const parent = ctx.traverserContext.parents().reverse()[0];
+  switch (parent?.type) {
+    case AST_NODE_TYPES.MethodDefinition:
+    case AST_NODE_TYPES.ExportNamedDeclaration:
+      return parent.loc;
+
+    default:
+      return ctx.node.loc;
+  }
+}

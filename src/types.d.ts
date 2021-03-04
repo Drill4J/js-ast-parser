@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Node } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
+import { Node, Range, SourceLocation } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 
 export interface FunctionNode {
   ctx: NodeContext;
   parent: FunctionNode;
 }
 
+interface NodePosition {
+  start: Position;
+  end: Position;
+}
+
+interface Position {
+  line: number;
+  column: number;
+}
+
 interface NodeInfo {
   name?: string;
   parentNameChain?: string;
   isAnonymous?: boolean;
+  range?: Range;
+  location?: SourceLocation;
   probes?: Array<number>;
   params?: Array<string>;
   checksum?: string;

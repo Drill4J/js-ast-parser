@@ -46,7 +46,7 @@ const output: Output = {
     data: processedSources,
     sourcemaps,
   },
-}
+};
 const { groupId } = config.output;
 if (groupId) {
   output.groupId = groupId;
@@ -56,14 +56,15 @@ sendResults(config.output, output);
 function processSources(paths) {
   console.log('Processing sources');
   const result = [];
+
   paths.forEach((path: string) => {
     try {
-      console.log('\t', path);
+      console.log('processing', path);
       const source = fsExtra.readFileSync(path, 'utf8');
       const processedSource = processSource(source);
-      processedSource.forEach(x =>
+      processedSource.forEach(async x =>
         result.push({
-          path: config.output.omitPathPrefix ? path.replace(new RegExp(`^${config.output.omitPathPrefix}`),'') : path,
+          path: config.output.omitPathPrefix ? path.replace(new RegExp(`^${config.output.omitPathPrefix}`), '') : path,
           suffix: x.name,
           methods: x.functions,
         }),
@@ -85,7 +86,7 @@ function findBundleFiles({ pattern, ignore }) {
   if (paths.length === 0 && !program.debug) {
     throw new Error('could not find bundle files');
   }
-  console.log('Bundle files found:\n\t', paths.join('\n\t'), '\n');
+  console.log('Bundle files found:', ' ', paths.length);
 
   const result = paths.map(path => {
     const bundleFile = fsExtra.readFileSync(path, 'utf8');
@@ -100,7 +101,7 @@ function findBundleFiles({ pattern, ignore }) {
 }
 
 function getHash(data) {
-  const seed = 0xABCD;
+  const seed = 0xabcd;
   const hashFn = xxHashJs.h32(seed);
   return hashFn.update(data).digest().toString(16);
 }
@@ -118,14 +119,15 @@ function findSourcemaps({ pattern, ignore }) {
   console.log('Searching sourcemaps');
   const paths = findFilePaths(pattern, ignore);
   if (paths.length === 0 && !program.debug) throw new Error('could not find sourcemaps');
-  console.log('Sourcemaps found:\n\t', paths.join('\n\t'), '\n');
+  console.log('Sourcemap files found:', ' ', paths.length);
+
   const result = paths.map(x => {
     const fileName = upath.basename(x);
     const sourcemap = fsExtra.readJSONSync(x, { encoding: 'utf-8' });
     return {
       sourcemap,
-      fileName
-    }
+      fileName,
+    };
   });
   return result;
 }
@@ -134,21 +136,26 @@ function findSourcePaths({ pattern, ignore }) {
   console.log('Searching sources');
   const result = findFilePaths(pattern, ignore);
   if (result.length === 0) throw new Error('could not find source files');
-  console.log('Found sources:\n\t', result.join('\n\t'), '\n');
+  console.log('Source files found:', ' ', result.length);
   return result;
+}
+
+function jsonStringifyReplacer(key, value) {
+  if (value === Infinity) return 'Infinity';
+  return value;
 }
 
 async function sendResults({ agentId, agentApiUrl, path }, buildInfo) {
   if (path) {
     console.log('Write AST data to', path, '\n');
-    await fsExtra.writeJSON(upath.join(path, `build-info.${Date.now()}.json`), buildInfo, { spaces: 2 });
+    await fsExtra.writeJSON(upath.join(path, `build-info.${Date.now()}.json`), buildInfo, { spaces: 2, replacer: jsonStringifyReplacer });
   }
 
   if (agentApiUrl) {
     console.log('Send results to', agentApiUrl, '\n');
-    await axios.post(`${agentApiUrl}/agents/${agentId}/plugins/test2code/build`, buildInfo, {
+    await axios.post(`${agentApiUrl}/agents/${agentId}/plugins/test2code/build`, JSON.stringify(buildInfo, jsonStringifyReplacer), {
       headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      maxContentLength: Infinity
+      maxContentLength: Infinity,
     });
   }
   console.log('Program finished. Exiting...');

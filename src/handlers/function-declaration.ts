@@ -17,6 +17,8 @@ import { FunctionDeclaration } from '@typescript-eslint/typescript-estree/dist/t
 import extractChecksum from '../extractors/checksum';
 import extractParams from '../extractors/params';
 import extractProbes from '../extractors/probes';
+import extractLocation from '../extractors/location';
+import extractRange from '../extractors/range';
 import extractParentNameChain from '../extractors/parent-name-chain';
 import { NodeContext } from '../types';
 
@@ -28,6 +30,8 @@ export default function (ctx: NodeContext) {
   ctx.result = {
     name,
     isAnonymous: !name,
+    range: extractRange(ctx),
+    location: extractLocation(ctx),
     parentNameChain: parentNameChain.join('.'),
     probes: extractProbes(ctx),
     params: extractParams((node as any).params),

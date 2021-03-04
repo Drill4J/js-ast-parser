@@ -50,31 +50,20 @@ function processTree(ast) {
 }
 
 export function processSubtree(subtree) {
-  const captureProbesOutsideFunctions = subtree.type === AST_NODE_TYPES.Program;
-
   const functions = [];
   const subtrees = [];
-  let functionNode: FunctionNode = null;
-  const nonFunctionProbesSet = new Set<number>();
 
   Traverser.traverse(subtree, {
     enter(node, parent) {
-      const isRoot = !parent;
-      if (isRoot) return;
-
+      // FIXME dirty hack
+      if (!parent && (node.type === AST_NODE_TYPES.ClassDeclaration || node.type === AST_NODE_TYPES.ClassExpression)) return;
       // ignore both callbacks and IIFEs
-      if (parent.type === AST_NODE_TYPES.CallExpression) return;
+      // if (parent?.type === AST_NODE_TYPES.CallExpression) return;
 
       // convert PascalCased node type to camelCased handler name
       const handlerName = node.type[0].toLowerCase() + node.type.substring(1, node.type.length);
       const handler = handlers[handlerName];
-      if (!handler) {
-        if (captureProbesOutsideFunctions) {
-          nonFunctionProbesSet.add(node.loc.start.line);
-          nonFunctionProbesSet.add(node.loc.end.line);
-        }
-        return;
-      }
+      if (!handler) return;
 
       const ctx: NodeContext = {
         node,
@@ -84,7 +73,11 @@ export function processSubtree(subtree) {
       };
       handler(ctx);
 
-      if (ctx.flags.handleAsSeparateTree) {
+      if (ctx.flags.skip) {
+        return;
+      }
+
+      if (parent && ctx.flags.handleAsSeparateTree) {
         subtrees.push({
           ast: ctx.node,
           name: ctx.result.name,
@@ -93,67 +86,9 @@ export function processSubtree(subtree) {
       }
 
       functions.push(ctx.result);
-
-      const isFirst = !functionNode;
-      if (isFirst) {
-        functionNode = {
-          ctx,
-          parent: null,
-        };
-        return;
-      }
-
-      const isChildNode = ctx.traverserContext.parents().includes(functionNode.ctx.node);
-      // TODO never suppose to happen, since functionNode is always created beforehand
-      // and the parent pointer is moved when a traverser is leaving the node
-      if (!isChildNode) return; // TODO warning
-
-      functionNode = {
-        ctx,
-        parent: functionNode,
-      };
     },
-    leave(node) {
-      if (!functionNode) return;
-
-      //  TODO abstract leave hooks ?
-      //  TODO is it shared state mutation?
-      const isLeavingTrackedNode = node === functionNode.ctx.node;
-      if (isLeavingTrackedNode) {
-        if (functionNode.parent) {
-          const parent = functionNode.parent.ctx.result;
-          const child = functionNode.ctx.result;
-
-          const probesToRemove = parent.probes.filter(
-            probe => (!child.isAnonymous && child.probes.includes(probe)) || (child.removedProbes && child.removedProbes.includes(probe)),
-          );
-
-          if (probesToRemove && !Array.isArray(parent.removedProbes)) {
-            parent.removedProbes = [];
-          }
-
-          parent.probes = parent.probes.filter(probe => !probesToRemove.includes(probe));
-          parent.removedProbes = parent.removedProbes.concat(probesToRemove);
-        }
-        functionNode = functionNode.parent;
-      }
-    },
+    // leave(node) {},
   });
-
-  const functionProbes = functions.reduce((a, f) => [...a, ...f.probes], []);
-
-  const nonFunctionProbes = Array.from(nonFunctionProbesSet)
-    .sort((a, b) => a - b)
-    .filter(x => !(functionProbes as Array<number>).includes(x));
-
-  if (nonFunctionProbes.length > 0) {
-    functions.unshift({
-      name: 'GLOBAL',
-      isAnonymous: false,
-      probes: nonFunctionProbes,
-      params: [],
-    });
-  }
 
   return { functions, subtrees };
 }

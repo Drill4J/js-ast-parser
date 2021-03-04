@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
-import { JSXElement, JSXFragment } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
+import { JSXElement, JSXFragment, Literal } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 import { NodeContext } from '../types';
 import extractName from './name';
 import extractNameFromJsxElement from './name/name-from-jsx-element';
@@ -25,6 +25,22 @@ export default function (ctx: NodeContext) {
   return parents
     .map((parent, parentIndex) => {
       switch (parent.type) {
+        // TODO
+        // - nested anonymous arrow functions
+        //    const add = (a) => (b) => (c) => a + b + c
+        // - IIFEs
+        //    (() => {})()
+        // case AST_NODE_TYPES.FunctionExpression:
+        //   return 'FunctionExpression';
+
+        case AST_NODE_TYPES.CallExpression: {
+          const literalValues = parent.arguments
+            .filter(x => x.type === AST_NODE_TYPES.Literal)
+            .map((literal: Literal) => literal.value)
+            .join(',');
+          return `${extractName(parent.callee)}(${literalValues})`;
+        }
+
         case AST_NODE_TYPES.ArrayExpression: {
           const index = parent.elements.findIndex(element => element === ctx.node); // searching only direct descendants
           if (index === -1) return '';
@@ -41,9 +57,11 @@ export default function (ctx: NodeContext) {
         // TODO refactor
         case AST_NODE_TYPES.JSXElement: {
           const previousParent = parents[parentIndex - 1];
-          if (previousParent &&
+          if (
+            previousParent &&
             (previousParent.type === AST_NODE_TYPES.JSXFragment || previousParent.type === AST_NODE_TYPES.JSXElement) &&
-            previousParent.children.length > 1) {
+            previousParent.children.length > 1
+          ) {
             const siblings = getJsxElementSiblings(previousParent, parent);
             if (siblings.length > 1) {
               const siblingIndex = siblings.findIndex(x => x === parent);
@@ -56,10 +74,12 @@ export default function (ctx: NodeContext) {
         // TODO refactor
         case AST_NODE_TYPES.JSXFragment: {
           const previousParent = parents[parentIndex - 1];
-          if (previousParent &&
+          if (
+            previousParent &&
             (previousParent.type === AST_NODE_TYPES.JSXFragment || previousParent.type === AST_NODE_TYPES.JSXElement) &&
-            previousParent.children.length > 1) {
-            const siblings = parent.children.filter(x => x.type === AST_NODE_TYPES.JSXFragment)
+            previousParent.children.length > 1
+          ) {
+            const siblings = parent.children.filter(x => x.type === AST_NODE_TYPES.JSXFragment);
             if (siblings.length > 1) {
               const siblingIndex = siblings.findIndex(x => x === parent);
               return `<JSXFragment>-${siblingIndex + 1}`;
@@ -77,9 +97,5 @@ export default function (ctx: NodeContext) {
 
 function getJsxElementSiblings(parent: JSXFragment | JSXElement, child: JSXElement) {
   const childName = extractNameFromJsxElement(child);
-  return parent.children
-    .filter(x =>
-      x.type === AST_NODE_TYPES.JSXElement &&
-      extractNameFromJsxElement(x) === childName
-    )
+  return parent.children.filter(x => x.type === AST_NODE_TYPES.JSXElement && extractNameFromJsxElement(x) === childName);
 }

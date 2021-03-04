@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { default as program } from './program';
-export { default as arrowFunctionExpression } from './arrow-function-expression';
-export { default as functionExpression } from './function-expression';
-export { default as functionDeclaration } from './function-declaration';
-export { default as classDeclaration } from './class-declaration';
-export { default as classExpression } from './class-expression';
+import { Range } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
+import { NodeContext } from '../types';
+
+export default function (ctx: NodeContext): Range {
+  return ctx.node.range;
+}

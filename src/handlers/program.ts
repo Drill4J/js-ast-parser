@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Program } from '@typescript-eslint/typescript-estree/dist/ts-estree/ts-estree';
 import extractChecksum from '../extractors/checksum';
-import extractParams from '../extractors/params';
 import extractProbes from '../extractors/probes';
 import extractRange from '../extractors/range';
 import extractLocation from '../extractors/location';
-import extractParentNameChain from '../extractors/parent-name-chain';
 import { NodeContext } from '../types';
 
 export default function (ctx: NodeContext) {
-  const { node } = ctx;
-  const checksum = extractChecksum(ctx);
-  const parentNameChain = extractParentNameChain(ctx);
-  const name = parentNameChain.pop();
-  ctx.result = {
-    name,
-    location: extractLocation(ctx),
-    range: extractRange(ctx),
-    isAnonymous: !name,
-    parentNameChain: parentNameChain.join('.'),
-    probes: extractProbes(ctx),
-    params: extractParams((node as any).params),
-    checksum,
-  };
+  const location = extractLocation(ctx);
+  location.end.column = Infinity;
+  const isEmptyProgram = (ctx.node as Program).body.length === 0;
+  if (isEmptyProgram) {
+    ctx.flags.skip = true;
+  } else {
+    ctx.result = {
+      name: 'GLOBAL', // TODO define literal name in config/env?
+      probes: extractProbes(ctx),
+      checksum: extractChecksum(ctx),
+      range: extractRange(ctx),
+      location,
+      isAnonymous: false, // TODO remove, it's added just to fit function's interface
+      parentNameChain: '', // TODO remove, it's added just to fit function's interface
+      params: [], // TODO remove, it's added just to fit function's interface
+    };
+  }
   return ctx;
 }
