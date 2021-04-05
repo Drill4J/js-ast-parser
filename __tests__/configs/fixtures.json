@@ -1,14 +1,14 @@
 {
   "sources": {
-    "pattern": "__tests__/fixtures/processor/**/function-overloading.ts"
+    "pattern": "__tests__/fixtures/processor/**/promise-then-catch-finally.js"
   },
   "bundle": {
-    "pattern": "placehodler"
+    "pattern": "placeholder"
   },
   "sourcemaps": {
     "pattern": "placeholder"
   },
   "output": {
-    "path": "./output/result.json"
+    "path": "./output"
   }
 }
