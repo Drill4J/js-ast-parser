@@ -71,6 +71,10 @@ const configSchema = joi
         }),
       )
       .required(),
+
+    analyzer: joi.object({
+      skipGlobals: joi.boolean(),
+    }),
   })
   .options({ stripUnknown: true });
 

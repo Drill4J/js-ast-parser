@@ -1,6 +1,6 @@
 {
   "sources": {
-    "pattern": "__tests__/fixtures/processor/**/promise-then-catch-finally.js"
+    "pattern": "__tests__/fixtures/processor/**/pageswitcher.jsx"
   },
   "bundle": {
     "pattern": "placeholder"
@@ -10,5 +10,8 @@
   },
   "output": {
     "path": "./output"
+  },
+  "analyzer": {
+    "skipGlobals": false
   }
 }

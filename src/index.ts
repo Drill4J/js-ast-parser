@@ -19,19 +19,19 @@ import * as handlers from './handlers';
 import parser from './parser';
 import { FunctionNode, NodeContext, Queue, Subtree } from './types';
 
-export default function processSource(source) {
+export default function processSource(source, options) {
   const ast = parser(source);
-  return processTree(ast);
+  return processTree(ast, options);
 }
 
-function processTree(ast) {
+function processTree(ast, options) {
   const results = [];
 
   const subtree: Subtree = { ast, name: null };
   const queue: Queue = [subtree];
 
   while (queue.length > 0) {
-    const processed = processSubtree(queue[0].ast);
+    const processed = processSubtree(queue[0].ast, options);
 
     if (processed.functions.length > 0) {
       results.push({
@@ -49,7 +49,7 @@ function processTree(ast) {
   return results;
 }
 
-export function processSubtree(subtree) {
+export function processSubtree(subtree, options) {
   const functions = [];
   const subtrees = [];
 
@@ -71,7 +71,7 @@ export function processSubtree(subtree) {
         flags: {},
         traverserContext: this,
       };
-      handler(ctx);
+      handler(ctx, options);
 
       if (ctx.flags.skip) {
         return;

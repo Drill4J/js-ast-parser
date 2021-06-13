@@ -37,7 +37,7 @@ const config = getConfig(program.config);
 const bundleFiles = findBundleFiles(config.bundle);
 const sourcemaps = findSourcemaps(config.sourcemaps);
 const sourcePaths = findSourcePaths(config.sources);
-const processedSources = processSources(sourcePaths);
+const processedSources = processSources(sourcePaths, config.analyzer);
 
 const output: Output = {
   version: program.buildVersion,
@@ -53,7 +53,7 @@ if (groupId) {
 }
 sendResults(config.output, output);
 
-function processSources(paths) {
+function processSources(paths, options) {
   console.log('Processing sources');
   const result = [];
 
@@ -61,7 +61,7 @@ function processSources(paths) {
     try {
       console.log('processing', path);
       const source = fsExtra.readFileSync(path, 'utf8');
-      const processedSource = processSource(source);
+      const processedSource = processSource(source, options);
       processedSource.forEach(async x =>
         result.push({
           path: config.output.omitPathPrefix ? path.replace(new RegExp(`^${config.output.omitPathPrefix}`), '') : path,

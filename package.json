@@ -1,5 +1,5 @@
 {
-  "version": "0.3.15-beta.0",
+  "version": "0.3.15-beta.1",
   "scripts": {
     "dev": "set NODE_ENV=development&& npx webpack --config webpack.config.js",
     "test": "jest -c jest.unit.js",
