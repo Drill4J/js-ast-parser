@@ -24,7 +24,7 @@ export default function (ctx: NodeContext, options) {
   const location = extractLocation(ctx);
   location.end.column = Infinity;
   const isEmptyProgram = (ctx.node as Program).body.length === 0;
-  if (isEmptyProgram || options.skipGlobals) {
+  if (isEmptyProgram || options?.skipGlobals) {
     ctx.flags.skip = true;
   } else {
     ctx.result = {
