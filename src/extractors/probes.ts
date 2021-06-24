@@ -43,7 +43,7 @@ import { NodeContext } from '../types';
       probeSet.add(getStartPosition(node.alternate)); // -1 on column index ?
     - if-else if
       ? where to place continuation probe?
-    - ternary operator within logical expressions chain
+    - within logical expressions chain
       ? where to place continuation probe
     - nested ternary operators
       ? where to place continuation probe?
@@ -64,8 +64,20 @@ const skipList = [
 ];
 
 export default function (ctx: NodeContext) {
-  const probeSet = new Set<number>();
+  const probeSet = new Set<any>();
   const tree = deepClone()(ctx.node);
+  // TODO thats a rather crude implementation, refactor
+  const addProbe = (probe, originator, reason) =>
+    probe &&
+    probeSet.add({
+      ...probe,
+      metadata: {
+        location: originator.loc.start,
+        type: originator.type,
+        reason,
+      },
+    });
+  const probeSorter = (a, b) => (a.line - b.line) * 1000 + (a.column - b.column);
 
   Traverser.traverse(tree, {
     enter(node, parent) {
@@ -77,7 +89,7 @@ export default function (ctx: NodeContext) {
         switch (node.type) {
           // Add probes to "containing" blocks
           case AST_NODE_TYPES.Program:
-            probeSet.add(getStartPosition(node));
+            addProbe(getStartPosition(node), node, 'start');
             break;
 
           case AST_NODE_TYPES.ArrowFunctionExpression:
@@ -101,9 +113,9 @@ export default function (ctx: NodeContext) {
                 (instead of placing a probe at the beginning of the body)
             */
             if (node.body.type === AST_NODE_TYPES.ArrowFunctionExpression) {
-              probeSet.add(getStartPosition(node));
+              addProbe(getStartPosition(node), node, 'start');
             } else {
-              probeSet.add(getStartPosition(node.body));
+              addProbe(getStartPosition(node.body), node, 'start');
             }
             break;
 
@@ -114,43 +126,43 @@ export default function (ctx: NodeContext) {
           case AST_NODE_TYPES.ForInStatement:
           case AST_NODE_TYPES.WhileStatement:
           case AST_NODE_TYPES.DoWhileStatement:
-            probeSet.add(getStartPosition(node.body));
-            probeSet.add(getContinuationPosition(node, this.parents()));
+            addProbe(getStartPosition(node.body), node, 'start');
+            addProbe(getContinuationPosition(node, this.parents()), node, 'continuation');
             break;
 
           // Conditional control flow
           case AST_NODE_TYPES.SwitchCase:
-            probeSet.add(getStartPosition(node));
+            addProbe(getStartPosition(node), node, 'start');
             break;
           case AST_NODE_TYPES.SwitchStatement:
-            probeSet.add(getContinuationPosition(node, this.parents()));
+            addProbe(getContinuationPosition(node, this.parents()), node, 'start');
             break;
 
           case AST_NODE_TYPES.IfStatement:
-            probeSet.add(getStartPosition(node.consequent));
+            addProbe(getStartPosition(node.consequent), node, 'consequent');
             if (node.alternate) {
-              probeSet.add(getStartPosition(node.alternate));
+              addProbe(getStartPosition(node.alternate), node, 'alternate');
             }
-            probeSet.add(getContinuationPosition(node, this.parents()));
+            addProbe(getContinuationPosition(node, this.parents()), node, 'continuation');
             break;
 
           case AST_NODE_TYPES.ConditionalExpression: {
             // ternary expression - test ? consequent : alternate
-            probeSet.add(getStartPosition(node.consequent)); // -1 on column index ?
-            probeSet.add(getStartPosition(node.alternate)); // -1 on column index ?
+            addProbe(getStartPosition(node.consequent), node, 'consequent'); // -1 on column index ?
+            addProbe(getStartPosition(node.alternate), node, 'alternate'); // -1 on column index ?
             const continuationPosition = getContinuationPosition(node, this.parents());
-            if (continuationPosition) probeSet.add(continuationPosition);
+            if (continuationPosition) addProbe(continuationPosition, node, 'continuation');
             break;
           }
 
           // Short-circuiting boolean operators
           case AST_NODE_TYPES.LogicalExpression: // && and ||
-            probeSet.add(getStartPosition(node.right));
+            addProbe(getStartPosition(node.right), node, 'start');
             // TODO add continuation probe?
-            // probeSet.add(getContinuationPosition(node.right, parent));
-            // probeSet.add(node.right.range[0]);
+            // addProbe(getContinuationPosition(node.right, parent));
+            // addProbe(node.right.range[0]);
             // // continuation (might overlap with the next op but it's ok)
-            // probeSet.add(node.right.range[1] + 1);
+            // addProbe(node.right.range[1] + 1);
             break;
 
           // Generator function yields (Yield)
@@ -160,14 +172,14 @@ export default function (ctx: NodeContext) {
           case AST_NODE_TYPES.ThrowStatement:
           case AST_NODE_TYPES.ContinueStatement:
           case AST_NODE_TYPES.BreakStatement: // might result in erroneous placement in switch blocks
-            probeSet.add(getContinuationPosition(node, this.parents()));
+            addProbe(getContinuationPosition(node, this.parents()), node, 'start');
             break;
 
           // Exception control-flow
           case AST_NODE_TYPES.TryStatement: {
             const { block, handler: catchBlock, finalizer: finallyBlock } = node;
-            probeSet.add(getStartPosition(catchBlock));
-            if (finallyBlock) probeSet.add(getStartPosition(finallyBlock));
+            addProbe(getStartPosition(catchBlock), node, 'start');
+            if (finallyBlock) addProbe(getStartPosition(finallyBlock), node, 'start');
             break;
           }
           default:
@@ -179,7 +191,7 @@ export default function (ctx: NodeContext) {
       }
     },
   });
-  return Array.from(probeSet).sort((a, b) => a - b);
+  return Array.from(probeSet).sort(probeSorter);
 }
 
 function getContinuationPosition(node: any, parentsForward: any[]) {
