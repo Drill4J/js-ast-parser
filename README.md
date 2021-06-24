@@ -2,10 +2,14 @@
 
 ## Production build
 
-1. Run
+1. Set `"sourceMap": false,` in tsconfig.json
+
+   > TODO: add separate build config
+
+2. Run
 
 ```shell
-    set NODE_ENV=production&& npx webpack --config webpack.config.js && rm -rf node_modules && npm i --only=prod && npm prune --production && npm shrinkwrap
+    npm install && set NODE_ENV=production&& npx webpack --config webpack.config.js && rm -rf node_modules && npm i --only=prod && npm prune --production && npm shrinkwrap
 ```
 
 ## Release
@@ -31,13 +35,15 @@ To release a new package version:
      npm i
    ```
 
-2. Run webpack development server
+2. Set `"sourceMap": true,` in tsconfig.json
+
+3. Run webpack development server
 
    ```shell
      npm run dev
    ```
 
-3. Attach debugger to the process started with `npm run dev`
+4. Attach debugger to the process started with `npm run dev`
 
    > VScode:
 
