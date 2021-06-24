@@ -193,22 +193,23 @@ function getContinuationPosition(node: any, parentsForward: any[]) {
 
   // define node's root among siblings
   const blockNodeIsDirectParent = blockNodeIndex === 0;
-  const rootSibling = blockNodeIsDirectParent ? node : parents[blockNodeIndex - 1];
+  const blockLevelContainer = blockNodeIsDirectParent ? node : parents[blockNodeIndex - 1];
 
   // find next sibling
-  const nextSibling = getNextSibling(rootSibling, blockNode);
+  const nextSibling = getNextSibling(blockLevelContainer, blockNode);
 
   if (nextSibling) {
     return getStartPosition(nextSibling);
   }
-
-  return getEndPosition(blockNode); // FIXME I don't remember why, but I though that this might not always work
+  return null;
 }
 
-function getNextSibling(sibling, parent) {
+function getNextSibling(container, parent) {
   if (parent.body.length === 1) return null;
-  const siblingIndex = parent.body.findIndex(x => x === sibling);
-  return parent.body[siblingIndex + 1];
+  const containerIndex = parent.body.findIndex(x => x === container);
+  const isLastInParentBlock = containerIndex === parent.body.length - 1;
+  if (isLastInParentBlock) return null;
+  return parent.body[containerIndex + 1];
 }
 
 function getStartPosition(node) {
