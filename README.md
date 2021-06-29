@@ -9,7 +9,7 @@
 2. Run
 
 ```shell
-    npm install && set NODE_ENV=production&& npx webpack --config webpack.config.js && rm -rf node_modules && npm i --only=prod && npm prune --production && npm shrinkwrap
+   npm install && npx webpack --config webpack.config.js && npm prune --production && npm shrinkwrap
 ```
 
 ## Release
