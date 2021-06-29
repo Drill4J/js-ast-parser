@@ -33,9 +33,7 @@
 //------------------------------------------------------------------------------
 
 import * as vk from 'eslint-visitor-keys';
-import Debug from 'debug';
 
-const debug = Debug('eslint:traverser');
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
@@ -68,7 +66,6 @@ function getVisitorKeys(visitorKeys, node) {
 
   if (!keys) {
     keys = vk.getKeys(node);
-    debug('Unknown node type "%s": Estimated visitor keys %j', node.type, keys);
   }
 
   return keys;
