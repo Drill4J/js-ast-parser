@@ -135,7 +135,7 @@ export default function (ctx: NodeContext) {
             addProbe(getStartPosition(node), node, 'start');
             break;
           case AST_NODE_TYPES.SwitchStatement:
-            addProbe(getContinuationPosition(node, this.parents()), node, 'start');
+            addProbe(getContinuationPosition(node, this.parents()), node, 'continuation');
             break;
 
           case AST_NODE_TYPES.IfStatement:
@@ -172,7 +172,7 @@ export default function (ctx: NodeContext) {
           case AST_NODE_TYPES.ThrowStatement:
           case AST_NODE_TYPES.ContinueStatement:
           case AST_NODE_TYPES.BreakStatement: // might result in erroneous placement in switch blocks
-            addProbe(getContinuationPosition(node, this.parents()), node, 'start');
+            addProbe(getContinuationPosition(node, this.parents()), node, 'continuation');
             break;
 
           // Exception control-flow
