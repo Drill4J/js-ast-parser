@@ -16,9 +16,10 @@
 import crypto from 'crypto';
 import deepClone from 'rfdc';
 import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
+import { simpleTraverse } from '@typescript-eslint/typescript-estree/dist/simple-traverse';
 import { NodeContext } from '../types';
 import isNodeWithBody from './utils/is-node-with-body';
-import Traverser from './utils/customized-traverser';
+import CustomizedTraverser from './utils/customized-traverser';
 
 export default function (ctx: NodeContext) {
   if (!isNodeWithBody(ctx.node)) {
@@ -26,20 +27,33 @@ export default function (ctx: NodeContext) {
     console.log('extractors:checksum-from-body', ctx.node.type, 'node has no body', ctx.node.loc.start, ctx.node.loc.end);
     return undefined;
   }
-
-  return stringifyAndHash(stripHandledNodesAndLocations(ctx.node));
+  return stringifyAndHash(removeLocationInfo(stripHandledNodes(ctx.node)));
 }
 
-function stripHandledNodesAndLocations(node) {
-  const tree = deepClone()(node);
-  Traverser.traverse(tree, {
-    // strip range & location info
-    enter(x) {
+// Have to use "typescript-eslint" traverser to remove position info
+//  Q: why?
+//  A: CustomizedTraverser (based on "eslint" traverser) does not support TypeScript keys
+//      skipped type-annotated nodes contribute to checksum
+//      one of these are function/method params
+//      leading to false change detection
+//      (when only position were changed, not the actual contents of function/method)
+// TODO is it viable to implement custom TypeScript traverser, with "enter/leave/childrenTransform" hooks?
+function removeLocationInfo(ast): any {
+  const result = deepClone()(ast);
+  simpleTraverse(result, {
+    enter: node => {
       // eslint-disable-next-line no-param-reassign
-      delete x.range;
+      delete node.range;
       // eslint-disable-next-line no-param-reassign
-      delete x.loc;
+      delete node.loc;
     },
+  });
+  return result;
+}
+
+function stripHandledNodes(node) {
+  const tree = deepClone()(node);
+  CustomizedTraverser.traverse(tree, {
     // strip nodes processed by other handlers
     childrenTransformer(children: any, key, parent) {
       if (!children) return;
