@@ -15,10 +15,10 @@
  */
 import crypto from 'crypto';
 import deepClone from 'rfdc';
-import { simpleTraverse } from '@typescript-eslint/typescript-estree/dist/simple-traverse';
-
+import { AST_NODE_TYPES } from '@typescript-eslint/typescript-estree';
 import { NodeContext } from '../types';
 import isNodeWithBody from './utils/is-node-with-body';
+import Traverser from './utils/customized-traverser';
 
 export default function (ctx: NodeContext) {
   if (!isNodeWithBody(ctx.node)) {
@@ -26,25 +26,53 @@ export default function (ctx: NodeContext) {
     console.log('extractors:checksum-from-body', ctx.node.type, 'node has no body', ctx.node.loc.start, ctx.node.loc.end);
     return undefined;
   }
-  return stringifyAndHash(removeLocationInfo(ctx.node));
+
+  return stringifyAndHash(stripHandledNodesAndLocations(ctx.node));
 }
 
-function removeLocationInfo(ast): any {
-  const result = deepClone()(ast);
-  simpleTraverse(result, {
-    enter: node => {
+function stripHandledNodesAndLocations(node) {
+  const tree = deepClone()(node);
+  Traverser.traverse(tree, {
+    // strip range & location info
+    enter(x) {
       // eslint-disable-next-line no-param-reassign
-      delete node.range;
+      delete x.range;
       // eslint-disable-next-line no-param-reassign
-      delete node.loc;
+      delete x.loc;
+    },
+    // strip nodes processed by other handlers
+    childrenTransformer(children: any, key, parent) {
+      if (!children) return;
+      if (Array.isArray(children)) {
+        // eslint-disable-next-line no-param-reassign
+        parent[key] = children.filter(x => !isHandledNodeType(x.type));
+        return;
+      }
+      if (isHandledNodeType(children.type)) {
+        // eslint-disable-next-line no-param-reassign
+        delete parent[key];
+      }
     },
   });
-  return result;
+  return tree;
+}
+
+// mirrors the contents of src/handlers/index.ts
+// except the "Program" node, because it is always the root / never a child
+const handledNodeTypes = [
+  AST_NODE_TYPES.FunctionExpression,
+  AST_NODE_TYPES.FunctionDeclaration,
+  AST_NODE_TYPES.ArrowFunctionExpression,
+  AST_NODE_TYPES.ClassDeclaration,
+  AST_NODE_TYPES.ClassExpression,
+];
+
+function isHandledNodeType(type) {
+  return handledNodeTypes.includes(type);
 }
 
 function stringifyAndHash(object: any): string {
   const fingerprint = JSON.stringify(object);
-
   const hash = crypto.createHash('sha256').update(fingerprint).digest('hex');
   return hash;
 }
