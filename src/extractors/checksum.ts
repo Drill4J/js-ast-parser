@@ -59,7 +59,7 @@ function stripHandledNodes(node) {
       if (!children) return;
       if (Array.isArray(children)) {
         // eslint-disable-next-line no-param-reassign
-        parent[key] = children.filter(x => !isHandledNodeType(x.type));
+        parent[key] = children.filter(x => !isHandledNodeType(x?.type));
         return;
       }
       if (isHandledNodeType(children.type)) {
